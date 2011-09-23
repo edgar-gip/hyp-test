@@ -1,0 +1,12 @@
+Changes
+Makefile.PL
+MANIFEST
+ppport.h
+README
+text.c
+text.h
+XFig.xs
+t/XFig.t
+lib/XFig.pm
+lib/XFig/MathHelp.pm
+lib/XFig/RangedFields.pm

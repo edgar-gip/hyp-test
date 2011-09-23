@@ -1,0 +1,4 @@
+include Makefile
+
+Makefile:
+	perl Makefile.PL
