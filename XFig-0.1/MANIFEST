@@ -1,5 +1,6 @@
 Changes
 Makefile.PL
+Makefile.wrap
 MANIFEST
 ppport.h
 README
