@@ -1,0 +1,6 @@
+Revision history for Perl extension BHSets.
+
+0.1  Sat Sep 24 17:34:16 2011
+	- original version; created by h2xs 1.23 with options
+		-A -n BHSets -v 0.1 --skip-autoloader bh.hxx
+

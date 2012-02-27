@@ -14,7 +14,7 @@ void
 exhaustiveSets(_k)
     int _k
   PROTOTYPE: $
-  PPCODE: {
+  PPCODE:
     // Call function
     bh::hypothesis_list E = bh::exhaustiveSets(_k);
 
@@ -52,4 +52,3 @@ exhaustiveSets(_k)
       // Push it
       PUSHs(sv_2mortal(newRV_noinc(reinterpret_cast<SV*>(cs))));
     }
-

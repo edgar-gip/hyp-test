@@ -1,4 +1,4 @@
-SUBDIRS = BHSets-0.1 Math-R-0.1 StatTests-0.1 XFig-0.1
+SUBDIRS = BH-0.1 BHSets-0.1 Math-R-0.1 StatTests-0.1 XFig-0.1
 
 # Main target
 .PHONY: all

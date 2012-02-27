@@ -13,9 +13,14 @@ use warnings;
 use FindBin qw( $RealBin );
 use Getopt::Long qw( :config no_ignore_case bundling );
 
+use lib "$RealBin/BH-0.1/blib/arch";
+use lib "$RealBin/BH-0.1/blib/lib";
+use BH qw( bergmannHommelOnline );
+
 use lib "$RealBin/BHSets-0.1/blib/arch";
 use lib "$RealBin/BHSets-0.1/blib/lib";
-use BHSets qw( exhaustiveSets );
+use BHSets qw( );
+use BHSets::Perl qw( );
 
 use lib "$RealBin/Math-R-0.1/blib/arch";
 use lib "$RealBin/Math-R-0.1/blib/lib";
@@ -45,15 +50,17 @@ use enum qw( BergmannHommel BonferroniDunn Hochberg Holm Nemenyi
 # -> Equal to qnorm(1.0 - (alpha_2 / (k - 1)))
 
 # Options
-my $against  = undef;
-my $alpha    = 0.10;
-my $extended = undef;
-my $named    = undef;
-my $reverse  = undef;
-my $test     = Nemenyi;
-my $testData = undef;
-my $title    = undef;
-my $verbose  = undef;
+my $against  	 = undef;
+my $alpha    	 = 0.10;
+my $bhExhaustive = undef;
+my $bhPerl       = undef;
+my $extended 	 = undef;
+my $named    	 = undef;
+my $reverse  	 = undef;
+my $test     	 = Nemenyi;
+my $testData 	 = undef;
+my $title    	 = undef;
+my $verbose  	 = undef;
 
 # Help string
 my $helpString = << "EOH;";
@@ -78,6 +85,16 @@ Options:
     --alpha <f>
       Sets the test significance level
       (Default is 0.10)
+
+    --bh-exhaustive
+    --bh-online
+      Use exhaustive set generation or online strategy for
+      Bergmann-Hommel test (default is online)
+
+    --bh-perl
+    --bh-xs
+      Use the Perl or XS code for exhaustive set generation
+      (Default is XS)
 
     --extended
     --no-extended
@@ -315,14 +332,29 @@ sub allNormBars($\@\@\@;$) {
 
 
 # Bergmann-Hommel test
-sub bergmannHommelBars($\@\@\@) {
+# Online version
+sub bergmannHommelOnlineBars($\@\@\@) {
     my ($k, $bars, $order, $names) = @_;
 
     # Verbose log
-    print STDERR ("Bergmann-Hommel\n") if $verbose;
+    print STDERR ("Bergmann-Hommel (Online)\n") if $verbose;
+
+    # Obtain the bars
+    @{$bars} = bergmannHommelOnline($k, @{$bars}, $alpha);
+}
+
+
+# Bergmann-Hommel test
+# Exhaustive version
+sub bergmannHommelExhaustiveBars($\@\@\@) {
+    my ($k, $bars, $order, $names) = @_;
+
+    # Verbose log
+    print STDERR ("Bergmann-Hommel (Exhaustive)\n") if $verbose;
 
     # Obtain the exhaustive sets
-    my @exSets = exhaustiveSets($k);
+    my @exSets = $bhPerl ? BHSets::Perl::exhaustiveSets($k)
+	                 : BHSets::exhaustiveSets($k);
 
     # Index p-Values
     my %pValue;
@@ -808,23 +840,27 @@ sub drawNames($$\@\@\@) {
 ########
 
 # Get the options
-if (!GetOptions("a|alpha=f"    => \$alpha,
-		"B|bergmann"   => sub { $test = BergmannHommel },
-		"b|bonferroni" => sub { $test = BonferroniDunn },
-		"c|hochberg"   => sub { $test = Hochberg },
-		"d|dunn"       => sub { $test = BonferroniDunn },
-		"e|extended!"  => \$extended,
-		"h|holm"       => sub { $test = Holm },
-		"H|hommel"     => sub { $test = BergmannHommel },
-		"l|all"        => sub { $against = undef },
-		"n|nemenyi"    => sub { $test = Nemenyi },
-		"N|named!"     => \$named,
-		"r|reverse!"   => \$reverse,
-		"s|schaffer"   => sub { $test = Schaffer },
-		"t|title=s"    => \$title,
-		"T|test!"      => \$testData,
-		"v|verbose!"   => \$verbose,
-		"x|against=s"  => \$against)) {
+if (!GetOptions('a|alpha=f'     => \$alpha,
+		'B|bergmann'    => sub { $test = BergmannHommel },
+		'bh-exhaustive' => \$bhExhaustive,
+		'bh-online'     => sub { $bhExhaustive = undef },
+		'bh-perl'       => \$bhPerl,
+		'bh-xs'         => sub { $bhPerl = undef },
+		'b|bonferroni' 	=> sub { $test = BonferroniDunn },
+		'c|hochberg'   	=> sub { $test = Hochberg },
+		'd|dunn'       	=> sub { $test = BonferroniDunn },
+		'e|extended!'  	=> \$extended,
+		'h|holm'       	=> sub { $test = Holm },
+		'H|hommel'     	=> sub { $test = BergmannHommel },
+		'l|all'        	=> sub { $against = undef },
+		'n|nemenyi'    	=> sub { $test = Nemenyi },
+		'N|named!'     	=> \$named,
+		'r|reverse!'   	=> \$reverse,
+		's|schaffer'   	=> sub { $test = Schaffer },
+		't|title=s'    	=> \$title,
+		'T|test!'      	=> \$testData,
+		'v|verbose!'   	=> \$verbose,
+		'x|against=s'  	=> \$against)) {
     die $helpString;
 }
 
@@ -851,7 +887,7 @@ drawTitle($k, $title) if $title;
 
 # Find the ranks
 my @ranks = @{$friedman->{'avgRank'}};
-map { $_ = ($k + 1) - $_ } @ranks if $reverse;
+if ($reverse) { $_ = ($k + 1) - $_ foreach @ranks }
 my @order = sort { $ranks[$b] <=> $ranks[$a] } (0..$#ranks);
 
 # Against column info
@@ -922,7 +958,12 @@ else {
 	}
 	else {
 	    # Bermann-Hommel test
-	    bergmannHommelBars($k, @bars, @order, @names);
+	    if ($bhExhaustive) {
+		bergmannHommelExhaustiveBars($k, @bars, @order, @names);
+	    }
+	    else {
+		bergmannHommelOnlineBars($k, @bars, @order, @names);
+	    }
 	}
     }
     elsif ($test == Hochberg) {
