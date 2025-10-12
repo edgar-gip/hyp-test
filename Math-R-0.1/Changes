@@ -1,6 +1,0 @@
-Revision history for Perl extension Math::R.
-
-0.1  Thu Nov 23 18:49:03 2006
-	- original version; created by h2xs 1.23 with options
-		-O -n Math::R -v 0.1 -b 5.6.0 Math-R/libRmath/Rmath.h
-

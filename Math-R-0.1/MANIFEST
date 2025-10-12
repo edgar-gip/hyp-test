@@ -1,8 +1,6 @@
-Changes
 Makefile.PL
 Makefile.warp
 MANIFEST
 Math-R.i
-README
 lib/Math/R.pm
 t/Math-R.t

@@ -1,11 +1,11 @@
-bh.cxx
-bh.hxx
 BH.xs
-Changes
 Makefile.PL
 Makefile.wrap
 MANIFEST
-ppport.h
-README
-t/BH.t
+bh.cxx
+bh.hxx
 lib/BH.pm
+ppport.h
+subsets.cxx
+subsets.hxx
+t/BH.t

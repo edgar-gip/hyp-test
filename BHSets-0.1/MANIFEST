@@ -1,12 +1,10 @@
-bh.cxx
-bh.hxx
 BHSets.xs
-Changes
 Makefile.PL
 Makefile.wrap
 MANIFEST
-ppport.h
-README
-t/BHSets.t
+bh.cxx
+bh.hxx
 lib/BHSets.pm
 lib/BHSets/Perl.pm
+ppport.h
+t/BHSets.t

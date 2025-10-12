@@ -1,8 +1,6 @@
-Changes
 Makefile.PL
 Makefile.warp
 MANIFEST
-README
 bin/quickTest.pl
 lib/StatTests.pm
 lib/StatTests/BonferroniDunn.pm

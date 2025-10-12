@@ -1,6 +1,0 @@
-Revision history for Perl extension XFig.
-
-0.1  Mon Apr 20 16:01:26 2009
-	- original version; created by h2xs 1.23 with options
-		-c -n XFig -v 0.1
-
