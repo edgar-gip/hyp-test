@@ -61,9 +61,9 @@ our $help;
 
 # Get the options
 if (!GetOptions("conf-th=f" => \$confTh,
-		"paired!"   => \$paired,
-		"silent!"   => \$silent,
-		"help"      => \$help) ||
+                "paired!"   => \$paired,
+                "silent!"   => \$silent,
+                "help"      => \$help) ||
     $help || @ARGV < 1) {
     die $helpString;
 }
@@ -77,17 +77,17 @@ my $testResult;
 if ($test eq 'anova') {
     die "ANOVA test requires no arguments\n" if @ARGV != 0;
     $testResult = $paired ? pairedANOVA(@data) : ANOVA(@data);
-    
+
 } elsif ($test eq 'tukey') {
     die "Tukey test is for paired data\n" if !$paired;
     die "Must provide two columns\n" if @ARGV != 2;
     my $anova = pairedANOVA(@data);
     $testResult = tukey($anova, @ARGV);
-    
+
     unless ($silent) {
-	printf("%s\n", $anova->summary());
-	printf("Confidence of the null hypothesis in ANOVA test: %f\n\n",
-	       $anova->confidence());
+        printf("%s\n", $anova->summary());
+        printf("Confidence of the null hypothesis in ANOVA test: %f\n\n",
+               $anova->confidence());
     }
 
 } elsif ($test eq 'dunnett') {
@@ -95,18 +95,18 @@ if ($test eq 'anova') {
     die "Must provide two columns\n" if @ARGV != 2;
     my $anova = pairedANOVA(@data);
     $testResult = dunnett($anova, @ARGV);
-    
+
     unless ($silent) {
-	printf("%s\n", $anova->summary());
-	printf("Confidence of the null hypothesis in ANOVA test: %f\n\n",
-	       $anova->confidence());
+        printf("%s\n", $anova->summary());
+        printf("Confidence of the null hypothesis in ANOVA test: %f\n\n",
+               $anova->confidence());
     }
 
 } elsif ($test eq 'friedman') {
     die "Friedman test is for paired data\n" if !$paired;
     die "Friedman test requires no arguments\n" if @ARGV != 0;
     $testResult = friedman(@data);
-    
+
 } elsif ($test eq 'friedman-f') {
     die "Friedman-F test is for paired data\n" if !$paired;
     die "Friedman-F test requires no arguments\n" if @ARGV != 0;
@@ -114,21 +114,21 @@ if ($test eq 'anova') {
     $testResult = friedmanF($friedman);
 
     unless ($silent) {
-	printf("%s\n", $friedman->summary());
-	printf("Confidence of the null hypothesis in Friedman test: %f\n\n",
-	       $friedman->confidence());
+        printf("%s\n", $friedman->summary());
+        printf("Confidence of the null hypothesis in Friedman test: %f\n\n",
+               $friedman->confidence());
     }
-	
+
 } elsif ($test eq 'bonferroni-dunn') {
     die "Bonferroni-Dunn test is for paired data\n" if !$paired;
     die "Must provide two columns\n" if @ARGV != 2;
     my $friedman = friedman(@data);
     $testResult = bonferroniDunn($friedman, @ARGV);
-    
+
     unless ($silent) {
-	printf("%s\n", $friedman->summary());
-	printf("Confidence of the null hypothesis in Friedman test: %f\n\n",
-	       $friedman->confidence());
+        printf("%s\n", $friedman->summary());
+        printf("Confidence of the null hypothesis in Friedman test: %f\n\n",
+               $friedman->confidence());
     }
 
 } elsif ($test eq 'nemenyi') {
@@ -136,11 +136,11 @@ if ($test eq 'anova') {
     die "Must provide two columns\n" if @ARGV != 2;
     my $friedman = friedman(@data);
     $testResult = nemenyi($friedman, @ARGV);
-    
+
     unless ($silent) {
-	printf("%s\n", $friedman->summary());
-	printf("Confidence of the null hypothesis in Friedman test: %f\n\n",
-	       $friedman->confidence());
+        printf("%s\n", $friedman->summary());
+        printf("Confidence of the null hypothesis in Friedman test: %f\n\n",
+               $friedman->confidence());
     }
 
 } elsif ($test eq 'student') {
@@ -157,9 +157,9 @@ if ($test eq 'anova') {
     $testResult = $paired ? pairedWilcoxonZ($wilcox) : wilcoxonZ($wilcox);
 
     unless ($silent) {
-	printf("%s\n", $wilcox->summary());
-	printf("Confidence of the null hypothesis in Wilcoxon test: %f\n\n",
-	       $wilcox->confidence());
+        printf("%s\n", $wilcox->summary());
+        printf("Confidence of the null hypothesis in Wilcoxon test: %f\n\n",
+               $wilcox->confidence());
     }
 
 } else {
@@ -189,13 +189,13 @@ sub readPairedData {
 
     # Read the rest
     while (<STDIN>) {
-	chomp();
-	@F = split();
-	die "All input fields must be of the same size\n"
-	    if @F != $k;
-	for (my $i = 0; $i < $k; ++$i) {
-	    push(@{$result[$i]}, $F[$i]);
-	}
+        chomp();
+        @F = split();
+        die "All input fields must be of the same size\n"
+            if @F != $k;
+        for (my $i = 0; $i < $k; ++$i) {
+            push(@{$result[$i]}, $F[$i]);
+        }
     }
 
     # Return the result
@@ -205,5 +205,3 @@ sub readPairedData {
 # Read single data
 sub readSingleData {
 }
-    
-

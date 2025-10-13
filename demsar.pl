@@ -2,7 +2,7 @@
 # @see Janez Demsar
 #      "Statistical Comparisons of Classifiers over Multiple Data Sets"
 #      Journal of Machine Learning Research, 7, pp. 1--30, 2006
-# @see Salvador García, Francisco Herrera
+# @see Salvador GarcÃ­a, Francisco Herrera
 #      "An Extension on 'Statistical Comparisons of Classifiers over
 #       Multiple Data Sets' for All Pairwise Comparisons"
 #      Journal of Machine Learning Research, 9, pp. 2677--2694, 2008
@@ -50,17 +50,17 @@ use enum qw( BergmannHommel BonferroniDunn Hochberg Holm Nemenyi
 # -> Equal to qnorm(1.0 - (alpha_2 / (k - 1)))
 
 # Options
-my $against  	 = undef;
-my $alpha    	 = 0.10;
+my $against      = undef;
+my $alpha        = 0.10;
 my $bhExhaustive = undef;
 my $bhPerl       = undef;
-my $extended 	 = undef;
-my $named    	 = undef;
-my $reverse  	 = undef;
-my $test     	 = Nemenyi;
-my $testData 	 = undef;
-my $title    	 = undef;
-my $verbose  	 = undef;
+my $extended     = undef;
+my $named        = undef;
+my $reverse      = undef;
+my $test         = Nemenyi;
+my $testData     = undef;
+my $title        = undef;
+my $verbose      = undef;
 
 # Help string
 my $helpString = << "EOH;";
@@ -144,8 +144,8 @@ sub findIndex($\@) {
     my ($w, $array) = @_;
     my $i = 0;
     while ($i < @{$array}) {
-	return $i if $array->[$i] eq $w;
-	++$i;
+        return $i if $array->[$i] eq $w;
+        ++$i;
     }
     return undef;
 }
@@ -164,14 +164,14 @@ sub readPairedData {
 
     # Read the rest
     while (<$fin>) {
-	chomp();
-	@F = split();
-	shift(@F) if $named;
-	die "All input fields must be of the same size\n"
-	    if @F != $k;
-	for (my $i = 0; $i < $k; ++$i) {
-	    push(@{$result[$i]}, $F[$i]);
-	}
+        chomp();
+        @F = split();
+        shift(@F) if $named;
+        die "All input fields must be of the same size\n"
+            if @F != $k;
+        for (my $i = 0; $i < $k; ++$i) {
+            push(@{$result[$i]}, $F[$i]);
+        }
     }
 
     # Return the result
@@ -192,68 +192,68 @@ sub criticalDifferenceBars($\@\@\@;$) {
 
     # Is there an against column?
     if ($againstOrder) {
-	# One-vs-all
+        # One-vs-all
 
-	# Against rank
-	my $againstRank = $ranks->[$order->[$againstOrder]];
+        # Against rank
+        my $againstRank = $ranks->[$order->[$againstOrder]];
 
-	# Find the low point
-	my $lo = $againstOrder;
-	--$lo while $lo > 0 &&
-	            $ranks->[$order->[$lo - 1]] - $againstRank < $cd;
+        # Find the low point
+        my $lo = $againstOrder;
+        --$lo while $lo > 0 &&
+                    $ranks->[$order->[$lo - 1]] - $againstRank < $cd;
 
-	# Verbose log
-	printf STDERR (" %s == %s: %g - %g = %g < %g\n",
-		       @{$names}[@{$order}[$lo, $againstOrder]],
-		       $ranks->[$order->[$lo]], $againstRank,
-		       $ranks->[$order->[$lo]] - $againstRank, $cd)
-	    if $verbose;
+        # Verbose log
+        printf STDERR (" %s == %s: %g - %g = %g < %g\n",
+                       @{$names}[@{$order}[$lo, $againstOrder]],
+                       $ranks->[$order->[$lo]], $againstRank,
+                       $ranks->[$order->[$lo]] - $againstRank, $cd)
+            if $verbose;
 
-	# Find the high point
-	my $hi = $againstOrder;
-	++$hi while $hi < $#{$order} &&
-	            $againstRank - $ranks->[$order->[$hi + 1]] < $cd;
+        # Find the high point
+        my $hi = $againstOrder;
+        ++$hi while $hi < $#{$order} &&
+                    $againstRank - $ranks->[$order->[$hi + 1]] < $cd;
 
-	# Verbose log
-	printf STDERR (" %s == %s: %g - %g = %g < %g\n",
-		       @{$names}[@{$order}[$againstOrder, $hi]],
-		       $againstRank, $ranks->[$order->[$hi]],
-		       $againstRank - $ranks->[$order->[$hi]], $cd)
-	    if $verbose;
+        # Verbose log
+        printf STDERR (" %s == %s: %g - %g = %g < %g\n",
+                       @{$names}[@{$order}[$againstOrder, $hi]],
+                       $againstRank, $ranks->[$order->[$hi]],
+                       $againstRank - $ranks->[$order->[$hi]], $cd)
+            if $verbose;
 
-	# Add it as a single bar
-	push(@bars, [ $lo, $hi, undef ]);
+        # Add it as a single bar
+        push(@bars, [ $lo, $hi, undef ]);
     }
     else {
-	# All-vs-all
+        # All-vs-all
 
-	# Try all pairs
-	for (my $i = 0; $i < @{$order}; ++$i) {
-	    for (my $j = $i + 1; $j < @{$order}; ++$j) {
-		# If difference is lower than CD
-		if ($ranks->[$order->[$i]] - $ranks->[$order->[$j]] < $cd) {
-		    # Add
-		    push(@bars, [ $i, $j, undef ]);
+        # Try all pairs
+        for (my $i = 0; $i < @{$order}; ++$i) {
+            for (my $j = $i + 1; $j < @{$order}; ++$j) {
+                # If difference is lower than CD
+                if ($ranks->[$order->[$i]] - $ranks->[$order->[$j]] < $cd) {
+                    # Add
+                    push(@bars, [ $i, $j, undef ]);
 
-		    # Verbose log
-		    printf STDERR (" %s == %s: %g - %g = %g < %g\n",
-				   @{$names}[@{$order}[$i, $j]],
-				   @{$ranks}[@{$order}[$i, $j]],
-				   $ranks->[$order->[$i]] -
-				   $ranks->[$order->[$j]], $cd)
-			if $verbose;
-		}
-		else {
-		    # Verbose log
-		    printf STDERR (" %s != %s: %g - %g = %g > %g\n",
-				   @{$names}[@{$order}[$i, $j]],
-				   @{$ranks}[@{$order}[$i, $j]],
-				   $ranks->[$order->[$i]] -
-				   $ranks->[$order->[$j]], $cd)
-			if $verbose;
-		}
-	    }
-	}
+                    # Verbose log
+                    printf STDERR (" %s == %s: %g - %g = %g < %g\n",
+                                   @{$names}[@{$order}[$i, $j]],
+                                   @{$ranks}[@{$order}[$i, $j]],
+                                   $ranks->[$order->[$i]] -
+                                   $ranks->[$order->[$j]], $cd)
+                        if $verbose;
+                }
+                else {
+                    # Verbose log
+                    printf STDERR (" %s != %s: %g - %g = %g > %g\n",
+                                   @{$names}[@{$order}[$i, $j]],
+                                   @{$ranks}[@{$order}[$i, $j]],
+                                   $ranks->[$order->[$i]] -
+                                   $ranks->[$order->[$j]], $cd)
+                        if $verbose;
+                }
+            }
+        }
     }
 
     # Return the bars
@@ -272,58 +272,58 @@ sub allNormBars($\@\@\@;$) {
 
     # Is there an against column?
     if ($againstOrder) {
-	# One-vs-all
+        # One-vs-all
 
-	# Against rank
-	my $againstRank = $ranks->[$order->[$againstOrder]];
+        # Against rank
+        my $againstRank = $ranks->[$order->[$againstOrder]];
 
-	# Lower
-	for (my $i = 0; $i < $againstRank; ++$i) {
-	    my $z = ($ranks->[$order->[$i]] - $againstRank) / $stddev;
-	    my $p = 2.0 * Math::R::pnorm($z, 0.0, 1.0, 0, 0);
-	    push(@bars, [ $i, $againstOrder, $p ]);
+        # Lower
+        for (my $i = 0; $i < $againstRank; ++$i) {
+            my $z = ($ranks->[$order->[$i]] - $againstRank) / $stddev;
+            my $p = 2.0 * Math::R::pnorm($z, 0.0, 1.0, 0, 0);
+            push(@bars, [ $i, $againstOrder, $p ]);
 
-	    # Verbose log
-	    printf STDERR (" %s <-> %s: %g - %g = %g -> %g -> %g\n",
-			   @{$names}[@{$order}[$i, $againstOrder]],
-			   $ranks->[$order->[$i]], $againstRank,
-			   $ranks->[$order->[$i]] - $againstRank,
-			   $z, $p) if $verbose;
-	}
+            # Verbose log
+            printf STDERR (" %s <-> %s: %g - %g = %g -> %g -> %g\n",
+                           @{$names}[@{$order}[$i, $againstOrder]],
+                           $ranks->[$order->[$i]], $againstRank,
+                           $ranks->[$order->[$i]] - $againstRank,
+                           $z, $p) if $verbose;
+        }
 
-	# Upper
-	for (my $j = $againstRank + 1; $j < @{$order}; ++$j) {
-	    my $z = ($againstRank - $ranks->[$order->[$j]]) / $stddev;
-	    my $p = 2.0 * Math::R::pnorm($z, 0.0, 1.0, 0, 0);
-	    push(@bars, [ $againstOrder, $j, $p ]);
+        # Upper
+        for (my $j = $againstRank + 1; $j < @{$order}; ++$j) {
+            my $z = ($againstRank - $ranks->[$order->[$j]]) / $stddev;
+            my $p = 2.0 * Math::R::pnorm($z, 0.0, 1.0, 0, 0);
+            push(@bars, [ $againstOrder, $j, $p ]);
 
-	    # Verbose log
-	    printf STDERR (" %s <-> %s: %g - %g = %g -> %g -> %g\n",
-			   @{$names}[@{$order}[$againstOrder, $j]],
-			   $againstRank, $ranks->[$order->[$j]],
-			   $againstRank - $ranks->[$order->[$j]],
-			   $z, $p) if $verbose;
-	}
+            # Verbose log
+            printf STDERR (" %s <-> %s: %g - %g = %g -> %g -> %g\n",
+                           @{$names}[@{$order}[$againstOrder, $j]],
+                           $againstRank, $ranks->[$order->[$j]],
+                           $againstRank - $ranks->[$order->[$j]],
+                           $z, $p) if $verbose;
+        }
     }
     else {
-	# All-vs-all
+        # All-vs-all
 
-	# Try all pairs
-	for (my $i = 0; $i < @{$order}; ++$i) {
-	    for (my $j = $i + 1; $j < @{$order}; ++$j) {
-		my $z = ($ranks->[$order->[$i]] - $ranks->[$order->[$j]]) /
-		        $stddev;
-		my $p = 2.0 * Math::R::pnorm($z, 0.0, 1.0, 0, 0);
-		push(@bars, [ $i, $j, $p ]);
+        # Try all pairs
+        for (my $i = 0; $i < @{$order}; ++$i) {
+            for (my $j = $i + 1; $j < @{$order}; ++$j) {
+                my $z = ($ranks->[$order->[$i]] - $ranks->[$order->[$j]]) /
+                        $stddev;
+                my $p = 2.0 * Math::R::pnorm($z, 0.0, 1.0, 0, 0);
+                push(@bars, [ $i, $j, $p ]);
 
-		# Verbose log
-		printf STDERR (" %s <-> %s: %g - %g = %g -> %g -> %g\n",
-			       @{$names}[@{$order}[$i, $j]],
-			       @{$ranks}[@{$order}[$i, $j]],
-			       $ranks->[$order->[$i]] -
-			       $ranks->[$order->[$j]], $z, $p) if $verbose;
-	    }
-	}
+                # Verbose log
+                printf STDERR (" %s <-> %s: %g - %g = %g -> %g -> %g\n",
+                               @{$names}[@{$order}[$i, $j]],
+                               @{$ranks}[@{$order}[$i, $j]],
+                               $ranks->[$order->[$i]] -
+                               $ranks->[$order->[$j]], $z, $p) if $verbose;
+            }
+        }
     }
 
     # Return the bars
@@ -354,7 +354,7 @@ sub bergmannHommelExhaustiveBars($\@\@\@) {
 
     # Obtain the exhaustive sets
     my @exSets = $bhPerl ? BHSets::Perl::exhaustiveSets($k)
-	                 : BHSets::exhaustiveSets($k);
+                         : BHSets::exhaustiveSets($k);
 
     # Index p-Values
     my %pValue;
@@ -365,47 +365,47 @@ sub bergmannHommelExhaustiveBars($\@\@\@) {
 
     # Check each exhaustive set
     foreach my $set (@exSets) {
-	# Threshold
-	my $th = $alpha / @{$set};
+        # Threshold
+        my $th = $alpha / @{$set};
 
-	# Accepted?
-	my $accepted = 1;
-	foreach my $pair (@{$set}) {
-	    # Below threshold?
-	    if ($pValue{$pair} <= $th) {
-		# Reject!
-		$accepted = undef;
+        # Accepted?
+        my $accepted = 1;
+        foreach my $pair (@{$set}) {
+            # Below threshold?
+            if ($pValue{$pair} <= $th) {
+                # Reject!
+                $accepted = undef;
 
-		# Verbose log
-		if ($verbose) {
-		    my $npair = $pair;
-		    $npair =~ s/(\d+)/$names->[$1]/g;
-		    printf STDERR (" { %s } -> %s: p(%s) = %g < %g / %d = %g\n",
-				   join(' ', @{$set}), $npair, $pair,
-				   $pValue{$pair}, $alpha, scalar(@{$set}),
-				   $th);
-		}
+                # Verbose log
+                if ($verbose) {
+                    my $npair = $pair;
+                    $npair =~ s/(\d+)/$names->[$1]/g;
+                    printf STDERR (" { %s } -> %s: p(%s) = %g < %g / %d = %g\n",
+                                   join(' ', @{$set}), $npair, $pair,
+                                   $pValue{$pair}, $alpha, scalar(@{$set}),
+                                   $th);
+                }
 
-		# End
-		last;
-	    }
-	}
+                # End
+                last;
+            }
+        }
 
-	# Was it accepted after all?
-	if ($accepted) {
-	    # Verbose log
-	    printf STDERR (" { %s } -> Accepted!\n", join(' ', @{$set}))
-		if $verbose;
+        # Was it accepted after all?
+        if ($accepted) {
+            # Verbose log
+            printf STDERR (" { %s } -> Accepted!\n", join(' ', @{$set}))
+                if $verbose;
 
-	    # Add each pair
-	    $acceptance{$_} = 1 foreach @{$set};
-	}
+            # Add each pair
+            $acceptance{$_} = 1 foreach @{$set};
+        }
 
     }
 
     # Keep only those pairs not in the acceptance set
     foreach my $bar (@{$bars}) {
-	$bar = undef if !$acceptance{$bar->[0] . ',' . $bar->[1]};
+        $bar = undef if !$acceptance{$bar->[0] . ',' . $bar->[1]};
     }
 
     # Keep only those not rejected
@@ -425,50 +425,50 @@ sub hochbergBars(\@\@\@) {
     # Now, accept until the value is smaller
     my $m_i = 1;
     while (@bOrder) {
-	my $i = shift(@bOrder);
+        my $i = shift(@bOrder);
 
-	# Is p-value less than \alpha / (m - i)
-	if ($bars->[$i][2] <= $alpha / $m_i) {
-	    # Reject
-	    $bars->[$i] = undef;
+        # Is p-value less than \alpha / (m - i)
+        if ($bars->[$i][2] <= $alpha / $m_i) {
+            # Reject
+            $bars->[$i] = undef;
 
-	    # Verbose log
-	    printf STDERR (" %s != %s: %g < %g / %d = %g -> BREAK!\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $m_i,
-			   $alpha / $m_i) if $verbose;
+            # Verbose log
+            printf STDERR (" %s != %s: %g < %g / %d = %g -> BREAK!\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $m_i,
+                           $alpha / $m_i) if $verbose;
 
-	    # End
-	    last;
-	}
-	else {
-	    # Verbose log
-	    printf STDERR (" %s == %s: %g < %g / %d = %g\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $m_i,
-			   $alpha / $m_i) if $verbose;
+            # End
+            last;
+        }
+        else {
+            # Verbose log
+            printf STDERR (" %s == %s: %g < %g / %d = %g\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $m_i,
+                           $alpha / $m_i) if $verbose;
 
-	    # One more pair
-	    ++$m_i;
-	}
+            # One more pair
+            ++$m_i;
+        }
     }
 
     # For those which remain
     foreach my $i (@bOrder) {
-	# Update m_i
-	++$m_i;
+        # Update m_i
+        ++$m_i;
 
-	# Reject
-	$bars->[$i] = undef;
+        # Reject
+        $bars->[$i] = undef;
 
-	# Log
-	printf STDERR (" %s == %s: %g < %g / %d = %g\n",
-		       $names->[$order->[$bars->[$i][0]]],
-		       $names->[$order->[$bars->[$i][1]]],
-		       $bars->[$i][2], $alpha, $m_i,
-		       $alpha / $m_i) if $verbose;
+        # Log
+        printf STDERR (" %s == %s: %g < %g / %d = %g\n",
+                       $names->[$order->[$bars->[$i][0]]],
+                       $names->[$order->[$bars->[$i][1]]],
+                       $bars->[$i][2], $alpha, $m_i,
+                       $alpha / $m_i) if $verbose;
     }
 
     # Keep only those not rejected
@@ -488,50 +488,50 @@ sub holmBars(\@\@\@) {
     # Now, reject until the value is larger
     my $m_i = @{$bars};
     while (@bOrder) {
-	my $i = shift(@bOrder);
+        my $i = shift(@bOrder);
 
-	# Is p-value more than \alpha / (m - i)
-	if ($bars->[$i][2] > $alpha / $m_i) {
-	    # Verbose log
-	    printf STDERR (" %s == %s: %g < %g / %d = %g --> BREAK!\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $m_i,
-			   $alpha / $m_i) if $verbose;
+        # Is p-value more than \alpha / (m - i)
+        if ($bars->[$i][2] > $alpha / $m_i) {
+            # Verbose log
+            printf STDERR (" %s == %s: %g < %g / %d = %g --> BREAK!\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $m_i,
+                           $alpha / $m_i) if $verbose;
 
-	    # End
-	    last;
-	}
-	else {
-	    # Verbose log
-	    printf STDERR (" %s != %s: %g < %g / %d = %g\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $m_i,
-			   $alpha / $m_i) if $verbose;
+            # End
+            last;
+        }
+        else {
+            # Verbose log
+            printf STDERR (" %s != %s: %g < %g / %d = %g\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $m_i,
+                           $alpha / $m_i) if $verbose;
 
-	    # Reject
-	    $bars->[$i] = undef;
+            # Reject
+            $bars->[$i] = undef;
 
-	    # One less pair
-	    --$m_i;
-	}
+            # One less pair
+            --$m_i;
+        }
     }
 
     # Verbose log
     if ($verbose) {
-	# For those which remain
-	foreach my $i (@bOrder) {
-	    # Update m_i
-	    --$m_i;
+        # For those which remain
+        foreach my $i (@bOrder) {
+            # Update m_i
+            --$m_i;
 
-	    # Log
-	    printf STDERR (" %s == %s: %g < %g / %d = %g\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $m_i,
-			   $alpha / $m_i);
-	}
+            # Log
+            printf STDERR (" %s == %s: %g < %g / %d = %g\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $m_i,
+                           $alpha / $m_i);
+        }
     }
 
     # Keep only those not rejected
@@ -548,23 +548,23 @@ sub schafferBars($\@\@\@) {
     # Find the number of simultaneous true hypothesis
     my @S = ([ 0 ], [ 0 ]);
     for (my $i = 2; $i <= $k; ++$i) {
-	# Value \{ \comb{1}{2} + x | x \in S(k - 1) \} = \{ x \in S(k - 1) \}
-	my %vals = map { $_ => 1 } @{$S[$i - 1]};
+        # Value \{ \comb{1}{2} + x | x \in S(k - 1) \} = \{ x \in S(k - 1) \}
+        my %vals = map { $_ => 1 } @{$S[$i - 1]};
 
-	# Add \Cup_{j=2}^k \{ \comb{j}{2} + x | x \in S(k - j) \}
-	for (my $j = 2; $j <= $i; ++$j) {
-	    my $term = $j * ($j - 1) / 2;
-	    $vals{$term + $_} = 1 foreach @{$S[$i - $j]};
-	}
+        # Add \Cup_{j=2}^k \{ \comb{j}{2} + x | x \in S(k - j) \}
+        for (my $j = 2; $j <= $i; ++$j) {
+            my $term = $j * ($j - 1) / 2;
+            $vals{$term + $_} = 1 foreach @{$S[$i - $j]};
+        }
 
-	# Find them
-	my @vals = sort { $a <=> $b } keys(%vals);
+        # Find them
+        my @vals = sort { $a <=> $b } keys(%vals);
 
-	# Verbose log
-	printf STDERR (" S[%d] = { %s }\n", $i, join(', ', @vals)) if $verbose;
+        # Verbose log
+        printf STDERR (" S[%d] = { %s }\n", $i, join(', ', @vals)) if $verbose;
 
-	# Add it
-	push(@S, \@vals);
+        # Add it
+        push(@S, \@vals);
     }
 
     # Index
@@ -581,50 +581,50 @@ sub schafferBars($\@\@\@) {
     my $posS = $#sortS;
     my $t_i  = $sortS[$posS];
     while (@bOrder) {
-	my $i = shift(@bOrder);
+        my $i = shift(@bOrder);
 
-	# Is p-value more than \alpha / t_i
-	if ($bars->[$i][2] > $alpha / $t_i) {
-	    # Verbose log
-	    printf STDERR (" %s == %s: %g < %g / %d = %g -> BREAK!\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $t_i,
-			   $alpha / $t_i) if $verbose;
+        # Is p-value more than \alpha / t_i
+        if ($bars->[$i][2] > $alpha / $t_i) {
+            # Verbose log
+            printf STDERR (" %s == %s: %g < %g / %d = %g -> BREAK!\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $t_i,
+                           $alpha / $t_i) if $verbose;
 
-	    # End
-	    last;
-	}
-	else {
-	    # Verbose log
-	    printf STDERR (" %s != %s: %g < %g / %d = %g\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $t_i,
-			   $alpha / $t_i) if $verbose;
+            # End
+            last;
+        }
+        else {
+            # Verbose log
+            printf STDERR (" %s != %s: %g < %g / %d = %g\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $t_i,
+                           $alpha / $t_i) if $verbose;
 
-	    # Reject
-	    $bars->[$i] = undef;
+            # Reject
+            $bars->[$i] = undef;
 
-	    # Update t_i
-	    $t_i = $sortS[--$posS] if $t_i > --$m_i;
-	}
+            # Update t_i
+            $t_i = $sortS[--$posS] if $t_i > --$m_i;
+        }
     }
 
     # Verbose log
     if ($verbose) {
-	# For those which remain
-	foreach my $i (@bOrder) {
-	    # Update t_i
-	    $t_i = $sortS[--$posS] if $t_i > --$m_i;
+        # For those which remain
+        foreach my $i (@bOrder) {
+            # Update t_i
+            $t_i = $sortS[--$posS] if $t_i > --$m_i;
 
-	    # Log
-	    printf STDERR (" %s == %s: %g < %g / %d = %g\n",
-			   $names->[$order->[$bars->[$i][0]]],
-			   $names->[$order->[$bars->[$i][1]]],
-			   $bars->[$i][2], $alpha, $t_i,
-			   $alpha / $t_i);
-	}
+            # Log
+            printf STDERR (" %s == %s: %g < %g / %d = %g\n",
+                           $names->[$order->[$bars->[$i][0]]],
+                           $names->[$order->[$bars->[$i][1]]],
+                           $bars->[$i][2], $alpha, $t_i,
+                           $alpha / $t_i);
+        }
     }
 
     # Keep only those not rejected
@@ -659,84 +659,84 @@ sub blackBox($$$$) {
 #  Write black text
 sub blackText($$$$) {
     if ($_[0] == JT_CENTER || !$extended) {
-	# No extended processing
-	$xfig->justify(shift(@_));
-	$xfig->drawText(@_);
+        # No extended processing
+        $xfig->justify(shift(@_));
+        $xfig->drawText(@_);
     }
     else {
-	# Extended
-	my ($just, $x, $y, $text) = @_;
+        # Extended
+        my ($just, $x, $y, $text) = @_;
 
-	# Set justification
-	$xfig->justify($just);
+        # Set justification
+        $xfig->justify($just);
 
-	# Parts
-	my ($prefix, $symbols, $suffix);
+        # Parts
+        my ($prefix, $symbols, $suffix);
 
-	# Match
-	if ($just == JT_LEFT) {
-	    ($prefix, $symbols, $suffix) = $text =~ /^(.*?)(\\s\d+)+ ?(.*)$/;
-	}
-	else { # $just == JT_RIGHT
-	    ($suffix, $symbols, $prefix) = $text =~ /^(.*)(\\s\d+)+ ?(.*)$/;
-	}
+        # Match
+        if ($just == JT_LEFT) {
+            ($prefix, $symbols, $suffix) = $text =~ /^(.*?)(\\s\d+)+ ?(.*)$/;
+        }
+        else { # $just == JT_RIGHT
+            ($suffix, $symbols, $prefix) = $text =~ /^(.*)(\\s\d+)+ ?(.*)$/;
+        }
 
-	# Some remains?
-	while (defined($prefix)) {
-	    # Write the prefix
-	    $xfig->drawText($x, $y, $prefix) if $prefix;
+        # Some remains?
+        while (defined($prefix)) {
+            # Write the prefix
+            $xfig->drawText($x, $y, $prefix) if $prefix;
 
-	    # Which size?
-	    my ($width, $ascent, $descent) = $xfig->textSize($prefix);
+            # Which size?
+            my ($width, $ascent, $descent) = $xfig->textSize($prefix);
 
-	    # Update x
-	    if ($just == JT_LEFT) {
-		$x += $width;
-	    }
-	    else { # $just == JT_RIGHT
-		$x -= $width;
-	    }
+            # Update x
+            if ($just == JT_LEFT) {
+                $x += $width;
+            }
+            else { # $just == JT_RIGHT
+                $x -= $width;
+            }
 
-	    # Now, change to symbol
-	    $xfig->psFont(PS_SYMBOL);
+            # Now, change to symbol
+            $xfig->psFont(PS_SYMBOL);
 
-	    # Convert the symbols to a text
-	    my $stext =
-		join('', map { chr(oct($_)) } ($symbols =~ /\\s(\d+)/g));
+            # Convert the symbols to a text
+            my $stext =
+                join('', map { chr(oct($_)) } ($symbols =~ /\\s(\d+)/g));
 
-	    # Write it
-	    $xfig->drawText($x, $y, $stext);
+            # Write it
+            $xfig->drawText($x, $y, $stext);
 
-	    # Which size?
-	    ($width, $ascent, $descent) = $xfig->textSize($stext);
+            # Which size?
+            ($width, $ascent, $descent) = $xfig->textSize($stext);
 
-	    # Update x
-	    if ($just == JT_LEFT) {
-		$x += $width;
-	    }
-	    else { # $just == JT_RIGHT
-		$x -= $width;
-	    }
+            # Update x
+            if ($just == JT_LEFT) {
+                $x += $width;
+            }
+            else { # $just == JT_RIGHT
+                $x -= $width;
+            }
 
-	    # Back to default
-	    $xfig->psFont(PS_DEFAULT);
+            # Back to default
+            $xfig->psFont(PS_DEFAULT);
 
-	    # Set the suffix
-	    $text = $suffix;
+            # Set the suffix
+            $text = $suffix;
 
-	    # Next match
-	    if ($just == JT_LEFT) {
-		($prefix, $symbols, $suffix) =
-		    $text =~ /^(.*?)(\\s\d+)+ ?(.*)$/;
-	    }
-	    else { # $just == JT_RIGHT
-		($suffix, $symbols, $prefix) =
-		    $text =~ /^(.*)(\\s\d+)+ ?(.*)$/;
-	    }
-	}
+            # Next match
+            if ($just == JT_LEFT) {
+                ($prefix, $symbols, $suffix) =
+                    $text =~ /^(.*?)(\\s\d+)+ ?(.*)$/;
+            }
+            else { # $just == JT_RIGHT
+                ($suffix, $symbols, $prefix) =
+                    $text =~ /^(.*)(\\s\d+)+ ?(.*)$/;
+            }
+        }
 
-	# Last one
-	$xfig->drawText($x, $y, $text) if $text;
+        # Last one
+        $xfig->drawText($x, $y, $text) if $text;
     }
 }
 
@@ -756,9 +756,9 @@ sub drawScale($) {
 
     blackLine(2, 500, 1000, int(1000 * $k) - 500, 1000);
     for (my $i = 0; $i < $k - 1; ++$i) {
-	blackLine(2, 500 + int(1000 * $i),  900,  500 + int(1000 * $i), 1100);
-	blackLine(2, 1000 + int(1000 * $i), 900, 1000 + int(1000 * $i), 1000);
-	blackText(JT_CENTER, 500 + int(1000 * $i), 825, $k - $i);
+        blackLine(2, 500 + int(1000 * $i),  900,  500 + int(1000 * $i), 1100);
+        blackLine(2, 1000 + int(1000 * $i), 900, 1000 + int(1000 * $i), 1000);
+        blackText(JT_CENTER, 500 + int(1000 * $i), 825, $k - $i);
     }
     blackLine(2, int(1000 * $k) - 500, 900, int(1000 * $k) - 500, 1100);
     blackText(JT_CENTER, int(1000 * $k) - 500, 825, 1);
@@ -778,11 +778,11 @@ sub assignDepth {
     my $barDepth = 1;
     my @depths;
     foreach my $bar (@bars) {
-	my $d = 0;
-	++$d while $d < @depths && $depths[$d] >= $bar->[0];
-	push(@{$bar}, $d);
-	$depths[$d] = $bar->[1];
-	$barDepth = $d + 1 if $d >= $barDepth;
+        my $d = 0;
+        ++$d while $d < @depths && $depths[$d] >= $bar->[0];
+        push(@{$bar}, $d);
+        $depths[$d] = $bar->[1];
+        $barDepth = $d + 1 if $d >= $barDepth;
     }
     return $barDepth;
 }
@@ -792,11 +792,11 @@ sub drawBars($\@\@\@) {
     my ($k, $order, $rank, $bars) = @_;
 
     foreach my $bar (@{$bars}) {
-	my ($a, $b, $p, $d) = @{$bar};
-	my $xa = 500 + int(1000 * ($k - $rank->[$order->[$a]]));
-	my $xb = 500 + int(1000 * ($k - $rank->[$order->[$b]]));
-	my $y  = 1200 + 150 * $d;
-	blackBox($xa - 25, $y, $xb + 25, $y + 75);
+        my ($a, $b, $p, $d) = @{$bar};
+        my $xa = 500 + int(1000 * ($k - $rank->[$order->[$a]]));
+        my $xb = 500 + int(1000 * ($k - $rank->[$order->[$b]]));
+        my $y  = 1200 + 150 * $d;
+        blackBox($xa - 25, $y, $xb + 25, $y + 75);
     }
 }
 
@@ -819,18 +819,18 @@ sub drawNames($$\@\@\@) {
     my $half = @{$order} >> 1;
     my $y    = 1300 + 150 * $nbars;
     for (my $i = 0; $i < $half; ++$i) {
-	my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
-	blackLine(1, $x, 1000, $x, $y, $x - 100, $y);
-	blackText(JT_RIGHT, $x - 150, $y + 65, $names->[$order->[$i]]);
-	$y += 200
+        my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
+        blackLine(1, $x, 1000, $x, $y, $x - 100, $y);
+        blackText(JT_RIGHT, $x - 150, $y + 65, $names->[$order->[$i]]);
+        $y += 200
     }
 
     $y -= 200 if !(@{$order} & 1);
     for (my $i = $half; $i < @{$order}; ++$i) {
-	my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
-	blackLine(1, $x, 1000, $x, $y, $x + 100, $y);
-	blackText(JT_LEFT, $x + 150, $y + 65, $names->[$order->[$i]]);
-	$y -= 200
+        my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
+        blackLine(1, $x, 1000, $x, $y, $x + 100, $y);
+        blackText(JT_LEFT, $x + 150, $y + 65, $names->[$order->[$i]]);
+        $y -= 200
     }
 }
 
@@ -841,26 +841,26 @@ sub drawNames($$\@\@\@) {
 
 # Get the options
 if (!GetOptions('a|alpha=f'     => \$alpha,
-		'B|bergmann'    => sub { $test = BergmannHommel },
-		'bh-exhaustive' => \$bhExhaustive,
-		'bh-online'     => sub { $bhExhaustive = undef },
-		'bh-perl'       => \$bhPerl,
-		'bh-xs'         => sub { $bhPerl = undef },
-		'b|bonferroni' 	=> sub { $test = BonferroniDunn },
-		'c|hochberg'   	=> sub { $test = Hochberg },
-		'd|dunn'       	=> sub { $test = BonferroniDunn },
-		'e|extended!'  	=> \$extended,
-		'h|holm'       	=> sub { $test = Holm },
-		'H|hommel'     	=> sub { $test = BergmannHommel },
-		'l|all'        	=> sub { $against = undef },
-		'n|nemenyi'    	=> sub { $test = Nemenyi },
-		'N|named!'     	=> \$named,
-		'r|reverse!'   	=> \$reverse,
-		's|schaffer'   	=> sub { $test = Schaffer },
-		't|title=s'    	=> \$title,
-		'T|test!'      	=> \$testData,
-		'v|verbose!'   	=> \$verbose,
-		'x|against=s'  	=> \$against)) {
+                'B|bergmann'    => sub { $test = BergmannHommel },
+                'bh-exhaustive' => \$bhExhaustive,
+                'bh-online'     => sub { $bhExhaustive = undef },
+                'bh-perl'       => \$bhPerl,
+                'bh-xs'         => sub { $bhPerl = undef },
+                'b|bonferroni'  => sub { $test = BonferroniDunn },
+                'c|hochberg'    => sub { $test = Hochberg },
+                'd|dunn'        => sub { $test = BonferroniDunn },
+                'e|extended!'   => \$extended,
+                'h|holm'        => sub { $test = Holm },
+                'H|hommel'      => sub { $test = BergmannHommel },
+                'l|all'         => sub { $against = undef },
+                'n|nemenyi'     => sub { $test = Nemenyi },
+                'N|named!'      => \$named,
+                'r|reverse!'    => \$reverse,
+                's|schaffer'    => sub { $test = Schaffer },
+                't|title=s'     => \$title,
+                'T|test!'       => \$testData,
+                'v|verbose!'    => \$verbose,
+                'x|against=s'   => \$against)) {
     die $helpString;
 }
 
@@ -879,7 +879,7 @@ my $stddev   = sqrt($k * ($k + 1) / 6 / $N);
 
 # Verbose log
 printf STDERR ("Friedman\n k:%d N:%d chi2:%g stdev:%g\n",
-	       $k, $N, $friedman->{'chiSq'}, $stddev) if $verbose;
+               $k, $N, $friedman->{'chiSq'}, $stddev) if $verbose;
 
 # Draw the scale and title
 drawScale($k);
@@ -896,7 +896,7 @@ if (defined($against)) {
     $againstIndex = findIndex($against, @names);
     $againstOrder = 0;
     ++$againstOrder while $againstOrder < @order &&
-	                  $order[$againstOrder] != $againstIndex;
+                          $order[$againstOrder] != $againstIndex;
 }
 
 # Find the bars
@@ -908,17 +908,17 @@ if ($test == BonferroniDunn) {
 
     # Find the critical difference
     my $qalpha = defined($against) ?
-	Math::R::qnorm(1.0 - $alpha / 2.0 / ($k - 1), 0, 1, 1, 0) : # One-vs-All
-	Math::R::qnorm(1.0 - $alpha / $k  / ($k - 1), 0, 1, 1, 0);  # All-vs-All
+        Math::R::qnorm(1.0 - $alpha / 2.0 / ($k - 1), 0, 1, 1, 0) : # One-vs-All
+        Math::R::qnorm(1.0 - $alpha / $k  / ($k - 1), 0, 1, 1, 0);  # All-vs-All
     my $cd     = $qalpha * $stddev;
     drawCD($cd);
 
     # Verbose log
     printf STDERR ("Bonferroni-Dunn\n alpha':%g qAlpha':%g CD:%g\n",
-		   defined($against) ?
-		   $alpha / ($k - 1) : 2.0 * $alpha / $k  / ($k - 1),
-		   $qalpha, $cd)
-	if $verbose;
+                   defined($against) ?
+                   $alpha / ($k - 1) : 2.0 * $alpha / $k  / ($k - 1),
+                   $qalpha, $cd)
+        if $verbose;
 
     # Critical difference bar
     @bars = criticalDifferenceBars($cd, @ranks, @order, @names, $againstOrder);
@@ -928,7 +928,7 @@ elsif ($test == Nemenyi) {
 
     # Used for One-vs-All
     warn "Nemenyi test loses power in One-vs-All comparisons\n"
-	if defined($against);
+        if defined($against);
 
     # Find the critical difference
     my $qalpha = Math::R::qtukey(1.0 - $alpha, 1.0, $k, 'inf', 1, 0) / sqrt(2);
@@ -937,7 +937,7 @@ elsif ($test == Nemenyi) {
 
     # Verbose log
     printf STDERR ("Nemenyi\n qAlpha:%g CD:%g\n", $qalpha, $cd)
-	if $verbose;
+        if $verbose;
 
     # Critical difference bars
     @bars = criticalDifferenceBars($cd, @ranks, @order, @names, $againstOrder);
@@ -950,46 +950,46 @@ else {
 
     # Apply the suitable test
     if ($test == BergmannHommel) {
-	# One-vs-all?
-	if (defined($against)) {
-	    # Error
-	    die "Bermann-Hommel test is unimplemented for One-vs-All " .
-		"comparisons\n";
-	}
-	else {
-	    # Bermann-Hommel test
-	    if ($bhExhaustive) {
-		bergmannHommelExhaustiveBars($k, @bars, @order, @names);
-	    }
-	    else {
-		bergmannHommelOnlineBars($k, @bars, @order, @names);
-	    }
-	}
+        # One-vs-all?
+        if (defined($against)) {
+            # Error
+            die "Bermann-Hommel test is unimplemented for One-vs-All " .
+                "comparisons\n";
+        }
+        else {
+            # Bermann-Hommel test
+            if ($bhExhaustive) {
+                bergmannHommelExhaustiveBars($k, @bars, @order, @names);
+            }
+            else {
+                bergmannHommelOnlineBars($k, @bars, @order, @names);
+            }
+        }
     }
     elsif ($test == Hochberg) {
-	# Hochber test
-	hochbergBars(@bars, @order, @names);
+        # Hochber test
+        hochbergBars(@bars, @order, @names);
     }
     elsif ($test == Holm) {
-	# Holm test
-	holmBars(@bars, @order, @names);
+        # Holm test
+        holmBars(@bars, @order, @names);
     }
     elsif ($test == Schaffer) {
-	# One-vs-all?
-	if (defined($against)) {
-	    # Equivalent to Holm
-	    warn "Schaffer test is equivalent to Holm test in One-vs-All " .
-		 "comparisons\n";
-	    holmBars(@bars, @order, @names);
-	}
-	else {
-	    # Schaffer test
-	    schafferBars($k, @bars, @order, @names);
-	}
+        # One-vs-all?
+        if (defined($against)) {
+            # Equivalent to Holm
+            warn "Schaffer test is equivalent to Holm test in One-vs-All " .
+                 "comparisons\n";
+            holmBars(@bars, @order, @names);
+        }
+        else {
+            # Schaffer test
+            schafferBars($k, @bars, @order, @names);
+        }
     }
     else {
-	# Error
-	die "Unhandled test #$test\n";
+        # Error
+        die "Unhandled test #$test\n";
     }
 }
 
@@ -998,16 +998,16 @@ my $i = 0;
 while ($i < @bars) {
     my $j = $i + 1;
     while ($j < @bars) {
-	if      ($bars[$i][0] >= $bars[$j][0] &&
-		 $bars[$i][1] <= $bars[$j][1]) {
-	    $bars[$i] = $bars[$j];
-	    splice(@bars, $j, 1);
-	} elsif ($bars[$j][0] >= $bars[$i][0] &&
-		 $bars[$j][1] <= $bars[$i][1]) {
-	    splice(@bars, $j, 1);
-	} else {
-	    ++$j;
-	}
+        if      ($bars[$i][0] >= $bars[$j][0] &&
+                 $bars[$i][1] <= $bars[$j][1]) {
+            $bars[$i] = $bars[$j];
+            splice(@bars, $j, 1);
+        } elsif ($bars[$j][0] >= $bars[$i][0] &&
+                 $bars[$j][1] <= $bars[$i][1]) {
+            splice(@bars, $j, 1);
+        } else {
+            ++$j;
+        }
     }
     ++$i;
 }
@@ -1021,7 +1021,7 @@ drawNames($k, $barDepth, @order, @ranks, @names);
 # Draw the bars
 drawBars($k, @order, @ranks, @bars);
 
-# Test data (García & Herrera, 2008)
+# Test data (GarcÃ­a & Herrera, 2008)
 __DATA__
     C4.5 1-NN Bays Krnl CN2
 Aba .219 .202 .249 .165 .261

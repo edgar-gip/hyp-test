@@ -45,10 +45,10 @@ static void addToList (vector<vector<bool> >&list, const vector<vector<uint> >& 
   for (uint k = 0; k < sets.size(); k++)
     for (uint i = 0; i < sets[k].size()-1; i++)
       for (uint j = i+1; j < sets[k].size(); j++) {
-	uint ind1 = sets[k][i];
-	uint ind2 = sets[k][j];
-	list[ind1][ind2] = true;
-	list[ind2][ind1] = true;
+        uint ind1 = sets[k][i];
+        uint ind2 = sets[k][j];
+        list[ind1][ind2] = true;
+        list[ind2][ind1] = true;
       }
 }
 
@@ -117,4 +117,3 @@ int main(void) {
   return 0;
 }
 #endif
-

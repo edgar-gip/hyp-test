@@ -16,16 +16,16 @@ use Carp qw( croak );
 sub bonferroniDunn {
     # Check arguments
     croak 'Must provide three arguments.'
-	if @_ != 3;
+        if @_ != 3;
     my ($friedman, $col1, $col2) = @_;
     croak 'First argument must be a Friedman model.'
-	if ref($friedman) ne 'StatTests::Friedman';
+        if ref($friedman) ne 'StatTests::Friedman';
     croak 'Second and third arguments must be integers.'
-	if $col1 !~ /^\d+$/ || $col2 !~ /^\d+/;
+        if $col1 !~ /^\d+$/ || $col2 !~ /^\d+/;
     my $k = $friedman->{'k'};
     croak 'Column out of range'
-	if $col1 < 0 || $col1 >= $k || $col2 < 0 || $col2 >= $k;
-    
+        if $col1 < 0 || $col1 >= $k || $col2 < 0 || $col2 >= $k;
+
     # Factor
     my $r1 = $friedman->{'avgRank'}[$col1];
     my $r2 = $friedman->{'avgRank'}[$col2];
@@ -34,7 +34,7 @@ sub bonferroniDunn {
 
     # Save everything to the object
     my $this = {
-	'r1' => $r1, 'r2' => $r2, 'z' => $z, 'k' => $k
+        'r1' => $r1, 'r2' => $r2, 'z' => $z, 'k' => $k
     };
     return bless($this);
 }
@@ -52,7 +52,7 @@ EOF;
 sub summary {
     my ($this) = @_;
     return sprintf($tableFormat,
-		   @{$this}{'r1', 'r2', 'z'});
+                   @{$this}{'r1', 'r2', 'z'});
 }
 
 # The statistic
@@ -60,7 +60,7 @@ sub statistic {
     my ($this) = @_;
     return $this->{'z'};
 }
-    
+
 # Confidence of the null hypothesis
 sub confidence {
     my ($this) = @_;

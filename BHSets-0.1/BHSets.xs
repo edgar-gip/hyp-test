@@ -8,7 +8,7 @@
 
 #include <bh.hxx>
 
-MODULE = BHSets		PACKAGE = BHSets
+MODULE = BHSets         PACKAGE = BHSets
 
 void
 exhaustiveSets(_k)
@@ -33,20 +33,20 @@ exhaustiveSets(_k)
 
       // For each element
       for (I32 i = 0; i < e->size(); ++i) {
-	// Is the pair already there?
-	std::map<bh::comparison, SV*>::iterator it =
-	  comparison_sv.find((*e)[i]);
-	if (it == comparison_sv.end()) {
-	  // Create it
-	  SV* csv =
-	    sv_2mortal(newSVpvf("%d,%d", (*e)[i].first, (*e)[i].second));
+        // Is the pair already there?
+        std::map<bh::comparison, SV*>::iterator it =
+          comparison_sv.find((*e)[i]);
+        if (it == comparison_sv.end()) {
+          // Create it
+          SV* csv =
+            sv_2mortal(newSVpvf("%d,%d", (*e)[i].first, (*e)[i].second));
 
-	  // Insert it
-	  it = comparison_sv.insert(std::make_pair((*e)[i], csv)).first;
-	}
+          // Insert it
+          it = comparison_sv.insert(std::make_pair((*e)[i], csv)).first;
+        }
 
-	// Point to it
-	av_store(cs, i, SvREFCNT_inc(it->second));
+        // Point to it
+        av_store(cs, i, SvREFCNT_inc(it->second));
       }
 
       // Push it

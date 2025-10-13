@@ -18,7 +18,7 @@ sub pairedWilcoxonZ {
     # Check the argument is a Wilcoxon
     croak 'Must provide an argument' if @_ != 1;
     croak 'Argument must be a PairedWilcoxon model'
-	if ref($_[0]) ne 'StatTests::PairedWilcoxon';
+        if ref($_[0]) ne 'StatTests::PairedWilcoxon';
     my ($wilcox) = @_;
 
     # Find Z
@@ -30,7 +30,7 @@ sub pairedWilcoxonZ {
 
     # Save everything to the object
     my $this = {
-	'N' => $N, 'z' => $z
+        'N' => $N, 'z' => $z
     };
     return bless($this);
 }
@@ -48,7 +48,7 @@ EOF;
 sub summary {
     my ($this) = @_;
     return sprintf($tableFormat,
-		   @{$this}{'z', 'N'});
+                   @{$this}{'z', 'N'});
 }
 
 # The statistic
@@ -65,5 +65,3 @@ sub confidence {
 
 # Return true
 1;
-
-    

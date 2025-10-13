@@ -28,7 +28,7 @@ sub solveQuadratic {
     return -$B / (2 * $A) if isZero($d);
     my $r = sqrt($d);
     return ((-$B + $r) / (2 * $A),
-	    (-$B - $r) / (2 * $A));
+            (-$B - $r) / (2 * $A));
 }
 
 # Middle Point
@@ -37,7 +37,7 @@ sub solveQuadratic {
 sub middlePoint {
     my ($x0, $y0, $x1, $y1) = @_;
     return (($x0 + $x1) / 2,
-	    ($y0 + $y1) / 2);
+            ($y0 + $y1) / 2);
 }
 
 # Middle Line
@@ -46,10 +46,10 @@ sub middlePoint {
 sub middleLine {
     my ($x0, $y0, $x1, $y1) = @_;
     die "The two points are the same\n"
-	if areEqual($x0, $x1) && areEqual($y0, $y1);
+        if areEqual($x0, $x1) && areEqual($y0, $y1);
     return ($x1 - $x0,
-	    $y1 - $y0,
-	    ($x1 * $x1 - $x0 * $x0 + $y1 * $y1 - $y0 * $y0) / 2);
+            $y1 - $y0,
+            ($x1 * $x1 - $x0 * $x0 + $y1 * $y1 - $y0 * $y0) / 2);
 }
 
 # Line Intersection
@@ -60,12 +60,12 @@ sub lineIntersection {
     my ($a, $b, $c, $d, $e, $f) = @_;
     my $det = $a * $e - $b * $d;
     if (isZero($a * $e - $b * $d)) {
-	die "The two lines are parallel\n"
-	    if (!isZero($a * $f - $c * $d) || !isZero($b * $f - $c * $e));
-	die "The two lines are the same\n";
+        die "The two lines are parallel\n"
+            if (!isZero($a * $f - $c * $d) || !isZero($b * $f - $c * $e));
+        die "The two lines are the same\n";
     }
     return (($c * $e - $b * $f) / $det,
-	    ($a * $f - $c * $d) / $det);
+            ($a * $f - $c * $d) / $det);
 }
 
 # Line-Circle Intersection
@@ -75,28 +75,28 @@ sub lineIntersection {
 sub lineCircleIntersection {
     my ($a, $b, $c, $xc, $yc, $rSq) = @_;
     if (isZero($a)) {
-	my $y = $c / $b;
-	my $d = $rSq - ($y - $yc) * ($y - $yc);
-	die "The line and the circle do not touch\n"
-	    if $d < 0;
-	$d = sqrt($d);
-	return ($xc + $d, $y, $xc - $d, $y);
+        my $y = $c / $b;
+        my $d = $rSq - ($y - $yc) * ($y - $yc);
+        die "The line and the circle do not touch\n"
+            if $d < 0;
+        $d = sqrt($d);
+        return ($xc + $d, $y, $xc - $d, $y);
     } elsif (isZero($b)) {
-	my $x = $c / $a;
-	my $d = $rSq - ($x - $xc) * ($x - $xc);
-	die "The line and the circle do not touch\n"
-	    if $d < 0;
-	$d = sqrt($d);
-	return ($x, $yc + $d, $x, $yc - $d);
+        my $x = $c / $a;
+        my $d = $rSq - ($x - $xc) * ($x - $xc);
+        die "The line and the circle do not touch\n"
+            if $d < 0;
+        $d = sqrt($d);
+        return ($x, $yc + $d, $x, $yc - $d);
     } else {
-	my ($n, $m) = (($c - $a * $xc - $b * $yc) / $b,
-		       -$a / $b);
-	my ($A, $B, $C) = ((1 + $m * $m), 2 * $m * $n, $n * $n - $rSq);
-	my ($xs, $xz) = solveQuadratic($A, $B, $C);
-	die "The line and the circle do not touch\n" if !defined($xs);
-	my ($ys, $yz) = ($n + $m * $xs, $n + $m * $xz);
-	return defined($xz) ?
-	    ($xs, $ys, $xz, $yz) : ($xs, $ys, $xs, $ys);
+        my ($n, $m) = (($c - $a * $xc - $b * $yc) / $b,
+                       -$a / $b);
+        my ($A, $B, $C) = ((1 + $m * $m), 2 * $m * $n, $n * $n - $rSq);
+        my ($xs, $xz) = solveQuadratic($A, $B, $C);
+        die "The line and the circle do not touch\n" if !defined($xs);
+        my ($ys, $yz) = ($n + $m * $xs, $n + $m * $xz);
+        return defined($xz) ?
+            ($xs, $ys, $xz, $yz) : ($xs, $ys, $xs, $ys);
     }
 }
 
@@ -111,7 +111,7 @@ sub vectorProduct {
 sub arcDirection {
     my ($xc, $yc, $x0, $y0, $x2, $y2) = @_;
     return vectorProduct($x0 - $xc, $y0 - $yc,
-			 $x2 - $xc, $y2 - $yc) > 0 ? 0 : 1;
+                         $x2 - $xc, $y2 - $yc) > 0 ? 0 : 1;
 }
 
 # Point in the middle of an arc
@@ -123,8 +123,8 @@ sub arcMid {
     my $rSq2 = $dx2 * $dx2 + $dy2 * $dy2;
     die "Points are not on a circle\n" if !areEqual($rSq0, $rSq2);
     my @line02 = middleLine($x0, $y0, $x2, $y2);
-    my ($xs, $ys, $xz, $yz) = 
-	lineCircleIntersection(@line02, $xc, $yc, $rSq0);
+    my ($xs, $ys, $xz, $yz) =
+        lineCircleIntersection(@line02, $xc, $yc, $rSq0);
     my $dirS = arcDirection($xc, $yc, $x0, $y0, $xs, $ys);
     return ($dir == $dirS) ? ($xs, $ys) : ($xz, $yz);
 }

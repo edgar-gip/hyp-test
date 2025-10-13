@@ -1,7 +1,7 @@
 # -*- mode: perl; -*-
 
 # 02-Friedman.t: Friedman Test Tests
-# Edgar Gonzàlez i Pellicer, 2010
+# Edgar GonzÃ lez i Pellicer, 2010
 
 use strict;
 use warnings;
@@ -27,7 +27,7 @@ my $f = StatTests::Friedman::friedman(@data);
 # Check the values
 SKIP : {
     skip(2, "Returned object is not a StatTests::Friedman")
-	if not isa_ok($f, 'StatTests::Friedman');
+        if not isa_ok($f, 'StatTests::Friedman');
 
     is($f->{'k'},   3);
     is($f->{'N'},  22);

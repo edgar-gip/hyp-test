@@ -6,7 +6,7 @@
 
 #include <bh.hxx>
 
-MODULE = BH		PACKAGE = BH
+MODULE = BH             PACKAGE = BH
 
 AV*
 bergmannHommelOnline(_k, _inBars, _alpha)

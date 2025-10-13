@@ -4,7 +4,7 @@ WriteMakefile(
     NAME         => 'XFig',
     VERSION_FROM => 'lib/XFig.pm',
     PREREQ_PM    => {},
-    AUTHOR       => 'Edgar Gonz‡lez <egonzalez@lsi.upc.edu>',
+    AUTHOR       => 'Edgar Gonz√†lez <egonzalez@lsi.upc.edu>',
     LIBS         => ['-lX11'],
     DEFINE       => '',
     INC          => '-I.',

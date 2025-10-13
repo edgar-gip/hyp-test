@@ -10,9 +10,9 @@ use Test::More tests => 10;
 
 #     print STDERR ("$label\n");
 #     for (my $i = 0; $i < @{$hc} || $i < @{$hp}; ++$i) {
-# 	printf STDERR ("\t%40s | %40s\n",
-# 		       join(" ", @{$hc->[$i]}),
-# 		       join(" ", @{$hp->[$i]}));
+#       printf STDERR ("\t%40s | %40s\n",
+#                      join(" ", @{$hc->[$i]}),
+#                      join(" ", @{$hp->[$i]}));
 #     }
 #     print STDERR ("\n");
 # }
@@ -30,4 +30,3 @@ for (my $i = 0; $i <= 7; ++$i) {
 
     is_deeply(\@hc, \@hp, "Equal exhaustive sets $i");
 }
-

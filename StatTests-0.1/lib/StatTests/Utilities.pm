@@ -12,8 +12,8 @@ our @EXPORT_OK = qw( checkArrayRefs checkEqArrayRefs );
 # Check if all arguments are array references
 sub checkArrayRefs {
     foreach (@_) {
-	return 'Argument should be an array reference.'
-	    if ref(@_) ne 'ARRAY';
+        return 'Argument should be an array reference.'
+            if ref(@_) ne 'ARRAY';
     }
 }
 
@@ -21,13 +21,13 @@ sub checkArrayRefs {
 sub checkEqArrayRefs {
     return if @_ < 2;
     return 'Argument should be an array reference.'
-	if ref($_[0]) ne 'ARRAY';
+        if ref($_[0]) ne 'ARRAY';
     my $size = @{$_[0]};
     for (my $i = 1; $i < @_; ++$i) {
-	return 'Argument should be an array reference.'
-	    if ref($_[$i]) ne 'ARRAY';
-	return 'All arguments should be array references of the same size.'
-	    if @{$_[$i]} != $size;
+        return 'Argument should be an array reference.'
+            if ref($_[$i]) ne 'ARRAY';
+        return 'All arguments should be array references of the same size.'
+            if @{$_[$i]} != $size;
     }
 }
 

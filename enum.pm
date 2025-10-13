@@ -15,29 +15,29 @@ sub import {
     # Follow each value
     my $cur = 0;
     while (@_) {
-	# Get the name
-	my $name = shift(@_);
+        # Get the name
+        my $name = shift(@_);
 
-	# Skip?
-	if ($name ne '*') {
-	    # Other
-	    Carp::croak("Invalid name: $name")
-		if $name !~ /_?[^\W_0-9]\w*$/;
+        # Skip?
+        if ($name ne '*') {
+            # Other
+            Carp::croak("Invalid name: $name")
+                if $name !~ /_?[^\W_0-9]\w*$/;
 
-	    # Peek for a value
-	    $cur = shift(@_) if @_ && $_[0] =~ /^[\+\-]?\d+$/;
+            # Peek for a value
+            $cur = shift(@_) if @_ && $_[0] =~ /^[\+\-]?\d+$/;
 
-	    # Assign
-	    {
-		no strict 'refs';
-		my $full_name = "${pkg}::$name";
-		my $val       = $cur;
-		*$full_name   = sub () { $val };
-	    }
-	}
+            # Assign
+            {
+                no strict 'refs';
+                my $full_name = "${pkg}::$name";
+                my $val       = $cur;
+                *$full_name   = sub () { $val };
+            }
+        }
 
-	# Next one
-	++$cur;
+        # Next one
+        ++$cur;
     }
 }
 

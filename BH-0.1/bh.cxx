@@ -32,8 +32,8 @@ list<bar> bergmannHommelOnline(uint _k, AV* _inBars, double _alpha) {
       croak("_inBars[%d] does not contain three elements", i);
 
     /* Get'em */
-    UV 	   first  = SvUV(*(av_fetch(tgt_av, 0, 0)));
-    UV 	   second = SvUV(*(av_fetch(tgt_av, 1, 0)));
+    UV     first  = SvUV(*(av_fetch(tgt_av, 0, 0)));
+    UV     second = SvUV(*(av_fetch(tgt_av, 1, 0)));
     double pValue = SvNV(*(av_fetch(tgt_av, 2, 0)));
 
     /* Sanity */
@@ -66,7 +66,7 @@ list<bar> bergmannHommelOnline(uint _k, AV* _inBars, double _alpha) {
   for (uint i = 0; i < _k - 1; ++i)
     for (uint j = i + 1; j < _k; ++j)
       if (equivalent[i][j])
-	results.push_back(bar(i, j, pValues[i][j]));
+        results.push_back(bar(i, j, pValues[i][j]));
 
   // Return
   return results;

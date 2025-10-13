@@ -1,7 +1,7 @@
 # -*- mode: perl; -*-
 
 # 01-StatTests.t: Base Tests
-# Edgar Gonz‡lez i Pellicer, 2010
+# Edgar Gonz√†lez i Pellicer, 2010
 
 use strict;
 use warnings;

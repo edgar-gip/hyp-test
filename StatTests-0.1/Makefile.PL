@@ -6,5 +6,5 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME    => 'StatTests',
     VERSION => '0.1',
-    AUTHOR  => 'Edgar Gonz‡lez i Pellicer <egonzalez@lsi.upc.edu>',
+    AUTHOR  => 'Edgar Gonz√†lez i Pellicer <egonzalez@lsi.upc.edu>',
 );

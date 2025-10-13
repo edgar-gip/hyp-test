@@ -18,9 +18,9 @@ sub imanDavenport {
     # Check the argument is a Friedman
     croak 'Must provide an argument' if @_ != 1;
     croak 'Argument must be a Friedman model'
-	if ref($_[0]) ne 'StatTests::Friedman';
+        if ref($_[0]) ne 'StatTests::Friedman';
     my ($friedman) = @_;
-    
+
     # Convert to F
     my ($k, $N, $chiSq) = @{$friedman}{'k', 'N', 'chiSq'};
     my $F     = ($N - 1) * $chiSq / ($N * ($k - 1) - $chiSq);
@@ -29,7 +29,7 @@ sub imanDavenport {
 
     # Save everything to the object
     my $this = {
-	'F' => $F, 'dfNum' => $dfNum, 'dfDen' => $dfDen
+        'F' => $F, 'dfNum' => $dfNum, 'dfDen' => $dfDen
     };
     return bless($this);
 }
@@ -47,7 +47,7 @@ EOF;
 sub summary {
     my ($this) = @_;
     return sprintf($tableFormat,
-		   @{$this}{'F', 'dfNum', 'dfDen'});
+                   @{$this}{'F', 'dfNum', 'dfDen'});
 }
 
 # The statistic
@@ -60,8 +60,8 @@ sub statistic {
 sub confidence {
     my ($this) = @_;
     return Math::R::pf($this->{'F'}, $this->{'dfNum'},
-		       $this->{'dfDen'}, 0, 0);
+                       $this->{'dfDen'}, 0, 0);
 }
-    
+
 # Return true
 1;

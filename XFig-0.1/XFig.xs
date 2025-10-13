@@ -6,7 +6,7 @@
 
 #include "text.h"
 
-MODULE = XFig	PACKAGE = XFig
+MODULE = XFig   PACKAGE = XFig
 
 void
 openDisplay(name)

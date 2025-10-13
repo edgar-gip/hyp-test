@@ -18,20 +18,20 @@ use StatTests::Utilities qw( checkEqArrayRefs );
 sub pairedWilcoxon {
     # Check arguments
     croak 'Must provide two arguments.'
-	if @_ != 2;
+        if @_ != 2;
     my $err = checkEqArrayRefs(@_);
     croak $err if $err;
-    
+
     # Size
     my $N = @{$_[0]};
-    
+
     # Convert and sort
     my @diffs;
     for (my $i = 0; $i < $N; ++$i) {
-	push(@diffs, $_[0][$i] - $_[1][$i]);
+        push(@diffs, $_[0][$i] - $_[1][$i]);
     }
     @diffs = sort { abs($a) <=> abs($b) } @diffs;
-    
+
     # Sums
     my $Wpos = 0;
     my $Wneg = 0;
@@ -39,29 +39,29 @@ sub pairedWilcoxon {
     # Assign ranks
     my $i = 0;
     while ($i < @diffs) {
-	my $j = $i + 1;
-	++$j while $j < @diffs && abs($diffs[$j]) == abs($diffs[$i]);
-	my $rank = ($i + $j + 1) / 2;
-	for (my $l = $i; $l < $j; ++$l) {
-	    my $s = Math::R::sign($diffs[$l]);
-	    if ($s > 0) {
-		$Wpos += $rank;
-	    } elsif ($s == 0) {
-		$Wpos += .5 * $rank;
-		$Wneg += .5 * $rank;
-	    } else {
-		$Wneg += $rank;
-	    }
-	}
-	$i = $j;
+        my $j = $i + 1;
+        ++$j while $j < @diffs && abs($diffs[$j]) == abs($diffs[$i]);
+        my $rank = ($i + $j + 1) / 2;
+        for (my $l = $i; $l < $j; ++$l) {
+            my $s = Math::R::sign($diffs[$l]);
+            if ($s > 0) {
+                $Wpos += $rank;
+            } elsif ($s == 0) {
+                $Wpos += .5 * $rank;
+                $Wneg += .5 * $rank;
+            } else {
+                $Wneg += $rank;
+            }
+        }
+        $i = $j;
     }
-    
+
     # Find the estimator and the Nsr
     my $W = $Wpos < $Wneg ? $Wpos : $Wneg;
 
     # Save everything to the object
     my $this = {
-	'N' => $N, 'W' => $W 
+        'N' => $N, 'W' => $W
     };
     return bless($this);
 }
@@ -79,7 +79,7 @@ EOF;
 sub summary {
     my ($this) = @_;
     return sprintf($tableFormat,
-		   @{$this}{'W', 'N'});
+                   @{$this}{'W', 'N'});
 }
 
 # The statistic

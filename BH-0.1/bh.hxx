@@ -29,6 +29,6 @@ struct bar {
 
 // Perform the bergmann-hommel test
 std::list<bar> bergmannHommelOnline(unsigned int _k, AV* _inBars,
-				    double _alpha);
+                                    double _alpha);
 
 #endif

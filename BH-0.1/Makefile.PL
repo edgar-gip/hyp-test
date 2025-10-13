@@ -7,8 +7,8 @@ WriteMakefile(
     ($] >= 5.005 ?
       (ABSTRACT_FROM  => 'lib/BH.pm',
        AUTHOR         =>
-       [ 'Ignasi AbÌo i Roig <iabio@lsi.upc.edu>',
-	 'Edgar Gonz‡lez i Pellicer <egonzalez@lsi.upc.edu>' ]) :
+       [ 'Ignasi Ab√≠o i Roig <iabio@lsi.upc.edu>',
+         'Edgar Gonz√†lez i Pellicer <egonzalez@lsi.upc.edu>' ]) :
       ()),
     LIBS              => [''],
     INC               => '-I.',

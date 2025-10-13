@@ -11,15 +11,15 @@
 #define ZOOM_FACTOR          (PIX_PER_INCH / DISPLAY_PIX_PER_INCH)
 
 /* Font size range (points) */
-#define MIN_FONT_SIZE	1
-#define MAX_FONT_SIZE	500
+#define MIN_FONT_SIZE   1
+#define MAX_FONT_SIZE   500
 
 /* Number of fonts */
 #define N_LATEX_FONTS 5
 #define N_PS_FONTS   35
 
 /* Latex font mapping */
-static int latexMapping[N_LATEX_FONTS] = 
+static int latexMapping[N_LATEX_FONTS] =
   {
     0,  /* Roman  */
     2,  /* Bold   */
@@ -187,11 +187,11 @@ static enum tsStatus lookupFont(int _psFlag, int _fontNum, int _size) {
 
   /* Is it a symbolic font? */
   isSymbolic = (strstr(psFonts[xfont],"ymbol") ||
-		strstr(psFonts[xfont],"ingbats"));
+                strstr(psFonts[xfont],"ingbats"));
 
   /* Create the font name */
   ret = snprintf(fontName, FONT_BUFFER_SIZE, "%s%d-*-*-*-*-*-%s-*",
-		 psFonts[xfont], _size, isSymbolic ? "*" : "ISO8859");
+                 psFonts[xfont], _size, isSymbolic ? "*" : "ISO8859");
   if (ret < 0 || ret >= FONT_BUFFER_SIZE)
     return TS_OVERRUN;
 
@@ -202,7 +202,7 @@ static enum tsStatus lookupFont(int _psFlag, int _fontNum, int _size) {
   if (!newFont) {
     /* Create the backup font name */
     ret = snprintf(fontName, FONT_BUFFER_SIZE, "%s%d-*-*-*-*-*-%s-*",
-		   psBackupFonts[xfont], _size, isSymbolic ? "*" : "ISO8859");
+                   psBackupFonts[xfont], _size, isSymbolic ? "*" : "ISO8859");
     if (ret < 0 || ret >= FONT_BUFFER_SIZE)
       return TS_OVERRUN;
 
@@ -222,14 +222,14 @@ static enum tsStatus lookupFont(int _psFlag, int _fontNum, int _size) {
   cache.xfont = xfont;
   cache.size  = _size;
   cache.font  = newFont;
-  
+
   /* OK */
   return TS_OK;
 }
 
 /* Text size */
 enum tsStatus textSize(int _psFlag, int _fontNum, int _size, const char* _text,
-		       int* _width, int* _ascent, int* _descent) {
+                       int* _width, int* _ascent, int* _descent) {
   /* Vars */
   enum tsStatus ret;
   int dir, asc, desc;
@@ -244,7 +244,7 @@ enum tsStatus textSize(int _psFlag, int _fontNum, int _size, const char* _text,
 
   /* Query */
   XTextExtents(cache.font, _text, strlen(_text),
-	       &dir, &asc, &desc, &overall);
+               &dir, &asc, &desc, &overall);
 
   /* Return */
   *_width   = ZOOM_FACTOR * overall.width;

@@ -15,7 +15,7 @@ use StatTests::Utilities qw( checkEqArrayRefs );
 sub pairedStudent {
     # Check arguments
     croak 'Must provide two arguments.'
-	if @_ != 2;
+        if @_ != 2;
     my $err = checkEqArrayRefs(@_);
     croak $err if $err;
 
@@ -30,25 +30,25 @@ sub pairedStudent {
 
     # Get accumulated statistics
     for (my $i = 0; $i < $N; ++$i) {
-	$sum1 += $_[0][$i];
-	$sum2 += $_[1][$i];
+        $sum1 += $_[0][$i];
+        $sum2 += $_[1][$i];
 
-	my $diff = $_[0][$i] - $_[1][$i];
-	$sumDf   += $diff;
-	$sumDfSq += $diff * $diff;
+        my $diff = $_[0][$i] - $_[1][$i];
+        $sumDf   += $diff;
+        $sumDfSq += $diff * $diff;
     }
-    
+
     # Get estimator
     my $meanDf = $sumDf / $N;
     my $varDf  = ($sumDfSq - $sumDf * $sumDf / $N) / ($N - 1);
     my $samDev = sqrt($varDf / $N);
     my $t      = $meanDf / $samDev;
-    
+
     # Save everything to the object
     my $this = {
-	'N'  => $N,         'df' => $N - 1,
-	'm1' => $sum1 / $N, 'm2' => $sum2 / $N,
-	't'  => $t
+        'N'  => $N,         'df' => $N - 1,
+        'm1' => $sum1 / $N, 'm2' => $sum2 / $N,
+        't'  => $t
     };
     return bless($this);
 }
@@ -66,7 +66,7 @@ EOF;
 sub summary {
     my ($this) = @_;
     return sprintf($tableFormat,
-		   @{$this}{'m1', 'm2', 't', 'df'});
+                   @{$this}{'m1', 'm2', 't', 'df'});
 }
 
 # The statistic

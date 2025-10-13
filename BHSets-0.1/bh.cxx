@@ -22,11 +22,11 @@ namespace bh {
       size_t key = size_t();
 
       for (comp_set::const_iterator it = _cs.begin();
-	   it != _cs.end(); ++it) {
-	assert(it->second > it->first);
+           it != _cs.end(); ++it) {
+        assert(it->second > it->first);
 
-	size_t idx = it->first + it->second * (it->second - 1) / 2;
-	key ^= (size_t(1) << (idx % (8 * sizeof(size_t))));
+        size_t idx = it->first + it->second * (it->second - 1) / 2;
+        key ^= (size_t(1) << (idx % (8 * sizeof(size_t))));
       }
 
       return key;
@@ -42,10 +42,10 @@ namespace bh {
       size_t sb = _b.size();
 
       if (sa != sb) {
-	return sa < sb;
+        return sa < sb;
       }
       else {
-	return _a < _b;
+        return _a < _b;
       }
     }
   };
@@ -71,13 +71,13 @@ namespace bh {
   // For each possible division
   static void
   divisions(const index_set& _cls, int _i,
-	    index_set& _c1, index_set& _c2,
-	    callback& _callback) {
+            index_set& _c1, index_set& _c2,
+            callback& _callback) {
     // Last one?
     if (_i == _cls.size() - 1) {
       // c1 is empty?
       if (_c1.empty())
-	return;
+        return;
 
       // Add it to c2
       _c2.push_back(_cls[_i]);
@@ -113,8 +113,8 @@ namespace bh {
       comp_set all;
       all.reserve(_cls.size() * (_cls.size() - 1) / 2);
       for (int i = 0; i < _cls.size(); ++i)
-	for (int j = i + 1; j < _cls.size(); ++j)
-	  all.push_back(comparison(_cls[i], _cls[j]));
+        for (int j = i + 1; j < _cls.size(); ++j)
+          all.push_back(comparison(_cls[i], _cls[j]));
 
       // Insert them
       E.insert(all);
@@ -142,14 +142,14 @@ namespace bh {
 
     // Append combinations
     for (hypothesis_set::const_iterator e1 = E1.begin();
-	 e1 != E1.end(); ++e1) {
+         e1 != E1.end(); ++e1) {
       for (hypothesis_set::const_iterator e2 = E2.begin();
-	   e2 != E2.end(); ++e2) {
-	comp_set comb(e1->size() + e2->size());
-	copy(e1->begin(), e1->end(), comb.begin());
-	copy(e2->begin(), e2->end(), comb.begin() + e1->size());
+           e2 != E2.end(); ++e2) {
+        comp_set comb(e1->size() + e2->size());
+        copy(e1->begin(), e1->end(), comb.begin());
+        copy(e2->begin(), e2->end(), comb.begin() + e1->size());
 
-	E_.insert(comb);
+        E_.insert(comb);
       }
     }
   }
@@ -192,9 +192,9 @@ int main(int argc, const char* argv[]) {
   for (bh::hypothesis_list::const_iterator it = E.begin();
        it != E.end(); ++it) {
     for (bh::comp_set::const_iterator cit = it->begin();
-	 cit != it->end(); ++cit)
+         cit != it->end(); ++cit)
       std::cout << char('A' + cit->first) << '='
-		<< char('A' + cit->second) << ' ';
+                << char('A' + cit->second) << ' ';
     std::cout << std::endl;
   }
 

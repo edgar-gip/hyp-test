@@ -6,7 +6,7 @@ WriteMakefile(
     PREREQ_PM         => {},
     ($] >= 5.005 ?
       (ABSTRACT_FROM  => 'lib/BHSets.pm',
-       AUTHOR         => 'Edgar Gonz‡lez i Pellicer <egonzalez@lsi.upc.edu>') :
+       AUTHOR         => 'Edgar Gonz√†lez i Pellicer <egonzalez@lsi.upc.edu>') :
       ()),
     LIBS              => [''],
     INC               => '-I.',
