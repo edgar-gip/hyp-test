@@ -1,0 +1,8 @@
+BasedOnStyle: Google
+
+AllowShortBlocksOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+DerivePointerAlignment: false
+InsertBraces: true
+PointerAlignment: Left

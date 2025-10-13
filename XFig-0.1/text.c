@@ -18,37 +18,34 @@
 
 #include "text.h"
 
+#include <X11/Xlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include <X11/Xlib.h>
-
 /* Zoom factor */
-#define PIX_PER_INCH         1200
+#define PIX_PER_INCH 1200
 #define DISPLAY_PIX_PER_INCH 80
-#define ZOOM_FACTOR          (PIX_PER_INCH / DISPLAY_PIX_PER_INCH)
+#define ZOOM_FACTOR (PIX_PER_INCH / DISPLAY_PIX_PER_INCH)
 
 /* Font size range (points) */
-#define MIN_FONT_SIZE   1
-#define MAX_FONT_SIZE   500
+#define MIN_FONT_SIZE 1
+#define MAX_FONT_SIZE 500
 
 /* Number of fonts */
 #define N_LATEX_FONTS 5
-#define N_PS_FONTS   35
+#define N_PS_FONTS 35
 
 /* Latex font mapping */
-static int latexMapping[N_LATEX_FONTS] =
-  {
+static int latexMapping[N_LATEX_FONTS] = {
     0,  /* Roman  */
     2,  /* Bold   */
     1,  /* Italic */
     16, /* Sans Serif */
     12  /* Typewriter */
-  };
+};
 
 /* PostScript font templates */
-static const char* psFonts[N_PS_FONTS] =
-  {
+static const char* psFonts[N_PS_FONTS] = {
     "-*-times-medium-r-normal--",
     "-*-times-medium-i-normal--",
     "-*-times-bold-r-normal--",
@@ -83,12 +80,10 @@ static const char* psFonts[N_PS_FONTS] =
     "-*-palatino-bold-i-normal--",
     "-*-symbol-medium-r-normal--",
     "-*-itc zapf chancery-medium-i-normal--",
-    "-*-itc zapf dingbats-*-*-*--"
-  };
+    "-*-itc zapf dingbats-*-*-*--"};
 
 /* PostScript backup font templates */
-static const char* psBackupFonts[N_PS_FONTS] =
-  {
+static const char* psBackupFonts[N_PS_FONTS] = {
     "-*-times-medium-r-normal--",
     "-*-times-medium-i-normal--",
     "-*-times-bold-r-normal--",
@@ -97,7 +92,7 @@ static const char* psBackupFonts[N_PS_FONTS] =
     "-*-lucida-medium-i-normal-sans-",
     "-*-lucida-bold-r-normal-sans-",
     "-*-lucida-bold-i-normal-sans-",
-    "-*-times-medium-r-normal--",      /* closest to Bookman */
+    "-*-times-medium-r-normal--", /* closest to Bookman */
     "-*-times-medium-i-normal--",
     "-*-times-bold-r-normal--",
     "-*-times-bold-i-normal--",
@@ -109,7 +104,7 @@ static const char* psBackupFonts[N_PS_FONTS] =
     "-*-helvetica-medium-o-normal--",
     "-*-helvetica-bold-r-normal--",
     "-*-helvetica-bold-o-normal--",
-    "-*-helvetica-medium-r-normal--",  /* closest to Helv-nar. */
+    "-*-helvetica-medium-r-normal--", /* closest to Helv-nar. */
     "-*-helvetica-medium-o-normal--",
     "-*-helvetica-bold-r-normal--",
     "-*-helvetica-bold-o-normal--",
@@ -117,14 +112,13 @@ static const char* psBackupFonts[N_PS_FONTS] =
     "-*-new century schoolbook-medium-i-normal--",
     "-*-new century schoolbook-bold-r-normal--",
     "-*-new century schoolbook-bold-i-normal--",
-    "-*-lucidabright-medium-r-normal--",   /* closest to Palatino */
+    "-*-lucidabright-medium-r-normal--", /* closest to Palatino */
     "-*-lucidabright-medium-i-normal--",
     "-*-lucidabright-demibold-r-normal--",
     "-*-lucidabright-demibold-i-normal--",
     "-*-symbol-medium-r-normal--",
     "-*-zapf chancery-medium-i-normal--",
-    "-*-zapf dingbats-*-*-*--"
-  };
+    "-*-zapf dingbats-*-*-*--"};
 
 /* Font name buffer size */
 #define FONT_BUFFER_SIZE 300
@@ -135,8 +129,9 @@ static Display* xDisplay = NULL;
 /* Open display */
 enum odStatus openDisplay(const char* _name) {
   /* Already open */
-  if (xDisplay)
+  if (xDisplay) {
     return OD_OPEN;
+  }
 
   /* Try to open */
   xDisplay = XOpenDisplay(_name);
@@ -153,65 +148,72 @@ struct cacheInfo {
 };
 
 /* Cache */
-static struct cacheInfo cache = { 0, 0, NULL };
+static struct cacheInfo cache = {0, 0, NULL};
 
 /* Lookup font */
 static enum tsStatus lookupFont(int _psFlag, int _fontNum, int _size) {
   /* Vars */
-  int  ret;
-  int  xfont;
-  int  isSymbolic;
+  int ret;
+  int xfont;
+  int isSymbolic;
   char fontName[FONT_BUFFER_SIZE];
   XFontStruct* newFont;
 
   /* Check size */
-  if (_size < MIN_FONT_SIZE || _size > MAX_FONT_SIZE)
+  if (_size < MIN_FONT_SIZE || _size > MAX_FONT_SIZE) {
     return TS_SIZE;
+  }
 
   /* Default is zero */
-  if (_fontNum == -1) _fontNum = 0;
+  if (_fontNum == -1) {
+    _fontNum = 0;
+  }
 
   /* Start locating the font */
   if (_psFlag) {
     /* PostScript font */
 
     /* Check */
-    if (_fontNum < 0 || _fontNum >= N_PS_FONTS)
+    if (_fontNum < 0 || _fontNum >= N_PS_FONTS) {
       return TS_FONT;
+    }
 
     /* Direct map */
     xfont = _fontNum;
-  }
-  else {
+  } else {
     /* Latex font */
 
     /* Check */
-    if (_fontNum < 0 || _fontNum >= N_LATEX_FONTS)
+    if (_fontNum < 0 || _fontNum >= N_LATEX_FONTS) {
       return TS_FONT;
+    }
 
     /* Map */
     xfont = latexMapping[_fontNum];
   }
 
   /* Same? */
-  if (cache.font && cache.xfont == xfont && _size == cache.size)
+  if (cache.font && cache.xfont == xfont && _size == cache.size) {
     /* No need to look */
     return TS_OK;
+  }
 
   /* Display is open? */
-  if (!xDisplay)
+  if (!xDisplay) {
     /* Error! */
     return TS_NODISPLAY;
+  }
 
   /* Is it a symbolic font? */
-  isSymbolic = (strstr(psFonts[xfont],"ymbol") ||
-                strstr(psFonts[xfont],"ingbats"));
+  isSymbolic =
+      (strstr(psFonts[xfont], "ymbol") || strstr(psFonts[xfont], "ingbats"));
 
   /* Create the font name */
   ret = snprintf(fontName, FONT_BUFFER_SIZE, "%s%d-*-*-*-*-*-%s-*",
                  psFonts[xfont], _size, isSymbolic ? "*" : "ISO8859");
-  if (ret < 0 || ret >= FONT_BUFFER_SIZE)
+  if (ret < 0 || ret >= FONT_BUFFER_SIZE) {
     return TS_OVERRUN;
+  }
 
   /* Look it up */
   newFont = XLoadQueryFont(xDisplay, fontName);
@@ -221,25 +223,28 @@ static enum tsStatus lookupFont(int _psFlag, int _fontNum, int _size) {
     /* Create the backup font name */
     ret = snprintf(fontName, FONT_BUFFER_SIZE, "%s%d-*-*-*-*-*-%s-*",
                    psBackupFonts[xfont], _size, isSymbolic ? "*" : "ISO8859");
-    if (ret < 0 || ret >= FONT_BUFFER_SIZE)
+    if (ret < 0 || ret >= FONT_BUFFER_SIZE) {
       return TS_OVERRUN;
+    }
 
     /* Look it up */
     newFont = XLoadQueryFont(xDisplay, fontName);
 
     /* Not found? */
-    if (!newFont)
+    if (!newFont) {
       return TS_NOFONT;
+    }
   }
 
   /* Free old font */
-  if (cache.font)
+  if (cache.font) {
     XFreeFont(xDisplay, cache.font);
+  }
 
   /* Update cache */
   cache.xfont = xfont;
-  cache.size  = _size;
-  cache.font  = newFont;
+  cache.size = _size;
+  cache.font = newFont;
 
   /* OK */
   return TS_OK;
@@ -257,16 +262,16 @@ enum tsStatus textSize(int _psFlag, int _fontNum, int _size, const char* _text,
   ret = lookupFont(_psFlag, _fontNum, _size);
 
   /* Any error? */
-  if (ret)
+  if (ret) {
     return ret;
+  }
 
   /* Query */
-  XTextExtents(cache.font, _text, strlen(_text),
-               &dir, &asc, &desc, &overall);
+  XTextExtents(cache.font, _text, strlen(_text), &dir, &asc, &desc, &overall);
 
   /* Return */
-  *_width   = ZOOM_FACTOR * overall.width;
-  *_ascent  = ZOOM_FACTOR * overall.ascent;
+  *_width = ZOOM_FACTOR * overall.width;
+  *_ascent = ZOOM_FACTOR * overall.ascent;
   *_descent = ZOOM_FACTOR * overall.descent;
   return TS_OK;
 }

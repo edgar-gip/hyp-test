@@ -27,24 +27,23 @@
 // Bergman-Hommel namespace
 namespace bh {
 
-  // Index
-  typedef char index;
+// Index
+typedef char index;
 
-  // Index set
-  typedef std::vector<index> index_set;
+// Index set
+typedef std::vector<index> index_set;
 
-  // Comparison
-  typedef std::pair<index, index> comparison;
+// Comparison
+typedef std::pair<index, index> comparison;
 
-  // Comparison set
-  typedef std::vector<comparison> comp_set;
+// Comparison set
+typedef std::vector<comparison> comp_set;
 
-  // Hypothesis list
-  typedef std::vector<comp_set> hypothesis_list;
+// Hypothesis list
+typedef std::vector<comp_set> hypothesis_list;
 
-  // Bergmann-Hommel exhaustive sets
-  hypothesis_list
-  exhaustiveSets(int _k);
-}
+// Bergmann-Hommel exhaustive sets
+hypothesis_list exhaustiveSets(int _k);
+}  // namespace bh
 
 #endif

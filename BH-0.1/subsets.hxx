@@ -22,8 +22,7 @@
 
 typedef unsigned int uint;
 
-void computeSets (const std::vector<std::vector<double> >& probs,
-                  double alpha,
-                  std::vector<std::vector<bool> >& list);
+void computeSets(const std::vector<std::vector<double>>& probs, double alpha,
+                 std::vector<std::vector<bool>>& list);
 
 #endif
