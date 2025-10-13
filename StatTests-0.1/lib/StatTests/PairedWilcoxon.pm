@@ -79,7 +79,7 @@ sub pairedWilcoxon {
     my $this = {
         'N' => $N, 'W' => $W
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

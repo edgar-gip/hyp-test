@@ -55,7 +55,7 @@ sub dunnett {
         'm2' => $m2, 't' => $t,
         'k'  => $k,  'dfErr' => $anova->{'dfErr'}
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

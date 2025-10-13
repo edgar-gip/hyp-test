@@ -48,7 +48,7 @@ sub pairedWilcoxonZ {
     my $this = {
         'N' => $N, 'z' => $z
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

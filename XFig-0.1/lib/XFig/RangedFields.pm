@@ -62,7 +62,7 @@ sub createAccessor {
 FUN;
 
     # Evaluate it
-    eval $code;
+    eval $code;  ## no critic (ProhibitStringyEval)
     die "Internal error: $@" if $@;
 }
 
@@ -88,7 +88,7 @@ sub createEmpty {
 FUN;
 
     # Evaluate it
-    eval $code;
+    eval $code;  ## no critic (ProhibitStringyEval)
     die "Internal error: $@" if $@;
 }
 

@@ -45,7 +45,7 @@ sub import {
 
             # Assign
             {
-                no strict 'refs';
+                no strict 'refs';  ## no critic (ProhibitNoStrict)
                 my $full_name = "${pkg}::$name";
                 my $val       = $cur;
                 *$full_name   = sub () { $val };

@@ -47,7 +47,7 @@ sub imanDavenport {
     my $this = {
         'F' => $F, 'dfNum' => $dfNum, 'dfDen' => $dfDen
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

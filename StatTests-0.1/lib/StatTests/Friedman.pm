@@ -103,7 +103,7 @@ sub friedman {
         'chiSq' => $chiSq, 'df' => $df,
         'avgRank' => \@avgRank
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

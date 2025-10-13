@@ -52,7 +52,7 @@ sub bonferroniDunn {
     my $this = {
         'r1' => $r1, 'r2' => $r2, 'z' => $z, 'k' => $k
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

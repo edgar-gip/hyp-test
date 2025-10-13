@@ -100,7 +100,7 @@ sub pairedANOVA {
 
         'sum'    => \@sum
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

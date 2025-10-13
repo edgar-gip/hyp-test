@@ -66,7 +66,7 @@ sub pairedStudent {
         'm1' => $sum1 / $N, 'm2' => $sum2 / $N,
         't'  => $t
     };
-    return bless($this);
+    return bless($this, __PACKAGE__);
 }
 
 # Table format

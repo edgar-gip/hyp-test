@@ -163,7 +163,7 @@ sub findIndex($\@) {
         return $i if $array->[$i] eq $w;
         ++$i;
     }
-    return undef;
+    return;
 }
 
 # Read the data
