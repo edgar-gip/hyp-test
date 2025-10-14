@@ -37,12 +37,12 @@ WriteMakefile(
             'lib/BHSets' => {
                 OBJECT => 'lib/BHSets$(OBJ_EXT) lib/BHSets/bh$(OBJ_EXT)',
             },
-            'lib/XFig' => {
-                OBJECT => 'lib/XFig$(OBJ_EXT) lib/XFig/text$(OBJ_EXT)',
-                LDFROM => 'lib/XFig$(OBJ_EXT) lib/XFig/text$(OBJ_EXT) -lX11',
-            },
         },
     },
+    PREREQ_PM => {
+	'SVG' => 0,
+    },
+    EXE_FILES => ['bin/hyp-test'],
 );
 
 package MY;

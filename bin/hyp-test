@@ -35,7 +35,7 @@ use BHSets qw( );
 use BHSets::Perl qw( );
 use Math::R;
 use StatTests::Friedman;
-use XFig qw( :area :b_area :color :just :psfonts );
+use SVG;
 
 use enum qw( BergmannHommel BonferroniDunn Hochberg Holm Nemenyi
              Schaffer );
@@ -57,7 +57,6 @@ my $against      = undef;
 my $alpha        = 0.10;
 my $bhExhaustive = undef;
 my $bhPerl       = undef;
-my $extended     = undef;
 my $named        = undef;
 my $reverse      = undef;
 my $test         = Nemenyi;
@@ -99,11 +98,6 @@ Options:
       Use the Perl or XS code for exhaustive set generation
       (Default is XS)
 
-    --extended
-    --no-extended
-      Use extended text processing (symbols)
-      (Default is not)
-
     --named
     --no-named
       Specifies if row names are included as first field in the input
@@ -125,8 +119,8 @@ Options:
 
 EOH;
 
-# XFig file
-my $xfig;
+# SVG file
+my $svg;
 
 
 #########
@@ -138,6 +132,7 @@ sub readColumnNames {
     my ($fin) = @_;
 
     my $firstLine = <$fin>;
+    die "Empty input\n" if !defined($firstLine);
     chomp($firstLine);
     return split(' ', $firstLine);
 }
@@ -159,6 +154,7 @@ sub readPairedData {
 
     # Read the first line
     my $firstLine = <$fin>;
+    die "Empty input\n" if !defined($firstLine);
     chomp($firstLine);
     my @F = split(' ', $firstLine);
     shift(@F) if $named;
@@ -636,111 +632,59 @@ sub schafferBars($\@\@\@) {
 
 
 ###############
-# XFig Output #
+# SVG Output #
 ###############
 
-# Write the header
-sub writeHeader {
-    my $display = $ENV{'DISPLAY'} || ':0';
-    XFig::openDisplay($display);
-    $xfig = new XFig('-');
-    $xfig->fill(C_BLACK);
+# SVG scale (with respect to old XFig units)
+use constant SVG_SCALE => 12;
+
+# Open SVG file
+sub openSVG {
+    $svg = new SVG();
 }
+
 # Draw a black line
 sub blackLine($@) {
-    $xfig->thick(shift(@_));
-    $xfig->drawLine(@_);
+    my ($thickness, @points) = @_;
+    if (@points == 4) {
+	my ($x1, $y1, $x2, $y2) = @points;
+	$svg->line(x1 => $x1 / SVG_SCALE, y1 => $y1 / SVG_SCALE,
+		   x2 => $x2 / SVG_SCALE, y2 => $y2 / SVG_SCALE,
+		   stroke => 'black', 'stroke-width' => $thickness);
+    } else {
+	my @pairs;
+	for (my $i = 0; $i < @points; $i += 2) {
+	    push(@pairs, sprintf("%d,%d",
+				 $points[$i] / SVG_SCALE,
+				 $points[$i + 1] / SVG_SCALE));
+	}
+	$svg->polyline(points => join(' ', @pairs), fill => 'none',
+		       stroke => 'black', 'stroke-width' => $thickness);
+    }
 }
 
 # Draw a black box
 sub blackBox($$$$) {
-    $xfig->area(BA_BLACK);
-    $xfig->drawBox(@_);
-    $xfig->area(A_NOT_FILLED);
+    my ($x1, $y1, $x2, $y2) = @_;
+    $svg->rect(x => $x1 / SVG_SCALE, y => $y1 / SVG_SCALE,
+	       width => ($x2 - $x1) / SVG_SCALE,
+	       height => ($y2 - $y1) / SVG_SCALE,
+	       stroke => 'black', fill => 'black');
 }
+
+our %justToAnchor = (
+    left => 'start',
+    center => 'middle',
+    right => 'end',
+);
 
 #  Write black text
 sub blackText($$$$) {
-    if ($_[0] == JT_CENTER || !$extended) {
-        # No extended processing
-        $xfig->justify(shift(@_));
-        $xfig->drawText(@_);
-    }
-    else {
-        # Extended
-        my ($just, $x, $y, $text) = @_;
-
-        # Set justification
-        $xfig->justify($just);
-
-        # Parts
-        my ($prefix, $symbols, $suffix);
-
-        # Match
-        if ($just == JT_LEFT) {
-            ($prefix, $symbols, $suffix) = $text =~ /^(.*?)(\\s\d+)+ ?(.*)$/;
-        }
-        else { # $just == JT_RIGHT
-            ($suffix, $symbols, $prefix) = $text =~ /^(.*)(\\s\d+)+ ?(.*)$/;
-        }
-
-        # Some remains?
-        while (defined($prefix)) {
-            # Write the prefix
-            $xfig->drawText($x, $y, $prefix) if $prefix;
-
-            # Which size?
-            my ($width, $ascent, $descent) = $xfig->textSize($prefix);
-
-            # Update x
-            if ($just == JT_LEFT) {
-                $x += $width;
-            }
-            else { # $just == JT_RIGHT
-                $x -= $width;
-            }
-
-            # Now, change to symbol
-            $xfig->psFont(PS_SYMBOL);
-
-            # Convert the symbols to a text
-            my $stext =
-                join('', map { chr(oct($_)) } ($symbols =~ /\\s(\d+)/g));
-
-            # Write it
-            $xfig->drawText($x, $y, $stext);
-
-            # Which size?
-            ($width, $ascent, $descent) = $xfig->textSize($stext);
-
-            # Update x
-            if ($just == JT_LEFT) {
-                $x += $width;
-            }
-            else { # $just == JT_RIGHT
-                $x -= $width;
-            }
-
-            # Back to default
-            $xfig->psFont(PS_DEFAULT);
-
-            # Set the suffix
-            $text = $suffix;
-
-            # Next match
-            if ($just == JT_LEFT) {
-                ($prefix, $symbols, $suffix) =
-                    $text =~ /^(.*?)(\\s\d+)+ ?(.*)$/;
-            }
-            else { # $just == JT_RIGHT
-                ($suffix, $symbols, $prefix) =
-                    $text =~ /^(.*)(\\s\d+)+ ?(.*)$/;
-            }
-        }
-
-        # Last one
-        $xfig->drawText($x, $y, $text) if $text;
-    }
+    my ($just, $x, $y, $text) = @_;
+    $svg->text(x => $x / SVG_SCALE, y => $y / SVG_SCALE,
+	       'text-align' => $just,
+	       'text-anchor' => $justToAnchor{$just})
+	->cdata($text);
 }
 
 # Draw the CD line
@@ -750,7 +694,7 @@ sub drawCD($) {
     blackLine(2, 500, 500, 500 + int(1000 * $cd), 500);
     blackLine(2, 500, 400, 500, 600);
     blackLine(2, 500 + int(1000 * $cd), 400, 500 + int(1000 * $cd), 600);
-    blackText(JT_CENTER, 500 + int(500 * $cd), 350, 'CD');
+    blackText('center', 500 + int(500 * $cd), 350, 'CD');
 }
 
 # Draw the scale
@@ -761,17 +705,17 @@ sub drawScale($) {
     for (my $i = 0; $i < $k - 1; ++$i) {
         blackLine(2, 500 + int(1000 * $i),  900,  500 + int(1000 * $i), 1100);
         blackLine(2, 1000 + int(1000 * $i), 900, 1000 + int(1000 * $i), 1000);
-        blackText(JT_CENTER, 500 + int(1000 * $i), 825, $k - $i);
+        blackText('center', 500 + int(1000 * $i), 825, $k - $i);
     }
     blackLine(2, int(1000 * $k) - 500, 900, int(1000 * $k) - 500, 1100);
-    blackText(JT_CENTER, int(1000 * $k) - 500, 825, 1);
+    blackText('center', int(1000 * $k) - 500, 825, 1);
 }
 
 # Draw the title
 sub drawTitle($$) {
     my ($k, $title) = @_;
 
-    blackText(JT_CENTER, 500 * $k, 350, $title);
+    blackText('center', 500 * $k, 350, $title);
 }
 
 # Assign depth
@@ -824,7 +768,7 @@ sub drawNames($$\@\@\@) {
     for (my $i = 0; $i < $half; ++$i) {
         my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
         blackLine(1, $x, 1000, $x, $y, $x - 100, $y);
-        blackText(JT_RIGHT, $x - 150, $y + 65, $names->[$order->[$i]]);
+        blackText('right', $x - 150, $y + 65, $names->[$order->[$i]]);
         $y += 200
     }
 
@@ -832,7 +776,7 @@ sub drawNames($$\@\@\@) {
     for (my $i = $half; $i < @{$order}; ++$i) {
         my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
         blackLine(1, $x, 1000, $x, $y, $x + 100, $y);
-        blackText(JT_LEFT, $x + 150, $y + 65, $names->[$order->[$i]]);
+        blackText('left', $x + 150, $y + 65, $names->[$order->[$i]]);
         $y -= 200
     }
 }
@@ -852,7 +796,6 @@ if (!GetOptions('a|alpha=f'     => \$alpha,
                 'b|bonferroni'  => sub { $test = BonferroniDunn },
                 'c|hochberg'    => sub { $test = Hochberg },
                 'd|dunn'        => sub { $test = BonferroniDunn },
-                'e|extended!'   => \$extended,
                 'h|holm'        => sub { $test = Holm },
                 'H|hommel'      => sub { $test = BergmannHommel },
                 'l|all'         => sub { $against = undef },
@@ -872,8 +815,8 @@ $named = 1 if $testData;
 my @names = readColumnNames($testData ? \*DATA : \*ARGV);
 my @data  = readPairedData ($testData ? \*DATA : \*ARGV);
 
-# Write the Header
-writeHeader();
+# Open the SVG file
+openSVG();
 
 # Apply the test and find information
 my $friedman = friedman(@data);
@@ -1023,6 +966,9 @@ drawNames($k, $barDepth, @order, @ranks, @names);
 
 # Draw the bars
 drawBars($k, @order, @ranks, @bars);
+
+# Display
+print($svg->xmlify());
 
 # Test data (García & Herrera, 2008)
 __DATA__
