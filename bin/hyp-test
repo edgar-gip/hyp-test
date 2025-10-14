@@ -76,26 +76,28 @@ Options:
     --holm
     --nemenyi
     --schaffer
-      Sets the test to be applied
+      Selects the test to be applied
       (Default is Nemenyi)
 
-    --against <s>
+    --against <name>
     --all
-      Sets a single method to make the comparison, or all-vs-all
+      Selects a single method to make the comparison, or all-vs-all
       (Default is all-vs-all)
 
-    --alpha <f>
+    --alpha <level>
       Sets the test significance level
       (Default is 0.10)
 
     --bh-exhaustive
     --bh-online
-      Use exhaustive set generation or online strategy for
-      Bergmann-Hommel test (default is online)
+      Use exhaustive set generation or online strategy for the Bergmann-Hommel
+      test
+      (Default is online)
 
     --bh-perl
     --bh-xs
-      Use the Perl or XS code for exhaustive set generation
+      Use the Perl or XS code for exhaustive set generation for the
+      Bergmann-Hommel test
       (Default is XS)
 
     --named
@@ -105,16 +107,22 @@ Options:
 
     --reverse
     --no-reverse
-      Sets the reversal of the scale (Highest values first)
+      Sets the reversal of the scale (highest values first)
       (Default is not)
 
     --title <s>
+    --no-title
       Sets the title for the plot
       (Default is none)
 
     --verbose
     --no-verbose
       Sets the verbosity mode
+      (Default is not)
+
+    --test
+    --no-test
+      Uses the sample test data from García and Herrera (2008)
       (Default is not)
 
 EOH;
@@ -787,7 +795,9 @@ sub drawNames($$\@\@\@) {
 ########
 
 # Get the options
-if (!GetOptions('a|alpha=f'     => \$alpha,
+my $help;
+if (!GetOptions('help'          => \$help,
+                'a|alpha=f'     => \$alpha,
                 'B|bergmann'    => sub { $test = BergmannHommel },
                 'bh-exhaustive' => \$bhExhaustive,
                 'bh-online'     => sub { $bhExhaustive = undef },
@@ -804,10 +814,15 @@ if (!GetOptions('a|alpha=f'     => \$alpha,
                 'r|reverse!'    => \$reverse,
                 's|schaffer'    => sub { $test = Schaffer },
                 't|title=s'     => \$title,
+                'no-title'      => sub { $title = undef },
                 'T|test!'       => \$testData,
                 'v|verbose!'    => \$verbose,
                 'x|against=s'   => \$against)) {
     die $helpString;
+}
+if ($help) {
+    print($helpString);
+    exit(0);
 }
 
 # Read data
@@ -969,6 +984,7 @@ drawBars($k, @order, @ranks, @bars);
 
 # Display
 print($svg->xmlify());
+exit(0);
 
 # Test data (García & Herrera, 2008)
 __DATA__

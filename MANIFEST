@@ -32,7 +32,7 @@ lib/StatTests/Tukey.pm
 lib/StatTests/Utilities.pm
 MANIFEST
 Makefile.PL
-README
+README.md
 t/01-Math-R.t
 t/02-BH.t
 t/03-BHSets.t
