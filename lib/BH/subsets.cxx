@@ -1,5 +1,5 @@
 // hyp-test: Non-parametric hypothesis testing.
-// Copyright (C) 2006-2012  Ignasi Abío i Roig <ignasi.abio@gmail.com>
+// Copyright (C) 2006-2025  Ignasi Abío i Roig <ignasi.abio@gmail.com>
 //                          Edgar Gonzàlez i Pellicer <edgar.gip@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
