@@ -1,6 +1,0 @@
-Makefile.PL
-Makefile.warp
-MANIFEST
-Math-R.i
-lib/Math/R.pm
-t/Math-R.t

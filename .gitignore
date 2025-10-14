@@ -1,7 +1,7 @@
 *.bs
 *.c
 *.o
+blib/
 Makefile
 MYMETA.*
-blib/
 pm_to_blib
