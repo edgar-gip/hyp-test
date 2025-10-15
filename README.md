@@ -6,12 +6,14 @@ This tool performs hypothesis testing for statistical comparison of methods over
 multiple datasets, using the approaches described in:
 
 *   Janez Demsar \
-    _Statistical Comparisons of Classifiers over Multiple   Data Sets_ \
+    [_Statistical Comparisons of Classifiers over Multiple Data Sets_](
+        https://www.jmlr.org/papers/v7/demsar06a.html) \
     Journal of Machine Learning Research, 7, pp. 1–30, 2006
 
 *   Salvador García, Francisco Herrera \
-    _An Extension on 'Statistical Comparisons of Classifiers over Multiple Data
-    Sets' for All Pairwise Comparisons_ \
+    [_An Extension on 'Statistical Comparisons of Classifiers over Multiple Data
+     Sets' for All Pairwise Comparisons_](
+        https://www.jmlr.org/papers/v9/garcia08a.html) \
     Journal of Machine Learning Research, 9, pp. 2677–2694, 2008
 
 # Usage
@@ -127,13 +129,13 @@ The following options control the tool:
 *   `--bh-exhaustive` \
     `--bh-online`
 
-    Use exhaustive set generation or online strategy for the Bergmann-Hommel
+    Uses exhaustive set generation or online strategy for the Bergmann-Hommel
     test (default is **online**).
 
 *   `--bh-perl` \
     `--bh-xs`
 
-    Use the Perl or XS code for exhaustive set generation for the
+    Uses the Perl or XS code for exhaustive set generation for the
     Bergmann-Hommel test (default is **XS**).
 
 *   `--named` \

@@ -90,13 +90,13 @@ Options:
 
     --bh-exhaustive
     --bh-online
-      Use exhaustive set generation or online strategy for the Bergmann-Hommel
+      Uses exhaustive set generation or online strategy for the Bergmann-Hommel
       test
       (Default is online)
 
     --bh-perl
     --bh-xs
-      Use the Perl or XS code for exhaustive set generation for the
+      Uses the Perl or XS code for exhaustive set generation for the
       Bergmann-Hommel test
       (Default is XS)
 
@@ -655,19 +655,19 @@ sub openSVG {
 sub blackLine($@) {
     my ($thickness, @points) = @_;
     if (@points == 4) {
-	my ($x1, $y1, $x2, $y2) = @points;
-	$svg->line(x1 => $x1 / SVG_SCALE, y1 => $y1 / SVG_SCALE,
-		   x2 => $x2 / SVG_SCALE, y2 => $y2 / SVG_SCALE,
-		   stroke => 'black', 'stroke-width' => $thickness);
+        my ($x1, $y1, $x2, $y2) = @points;
+        $svg->line(x1 => $x1 / SVG_SCALE, y1 => $y1 / SVG_SCALE,
+                   x2 => $x2 / SVG_SCALE, y2 => $y2 / SVG_SCALE,
+                   stroke => 'black', 'stroke-width' => $thickness);
     } else {
-	my @pairs;
-	for (my $i = 0; $i < @points; $i += 2) {
-	    push(@pairs, sprintf("%d,%d",
-				 $points[$i] / SVG_SCALE,
-				 $points[$i + 1] / SVG_SCALE));
-	}
-	$svg->polyline(points => join(' ', @pairs), fill => 'none',
-		       stroke => 'black', 'stroke-width' => $thickness);
+        my @pairs;
+        for (my $i = 0; $i < @points; $i += 2) {
+            push(@pairs, sprintf("%d,%d",
+                                 $points[$i] / SVG_SCALE,
+                                 $points[$i + 1] / SVG_SCALE));
+        }
+        $svg->polyline(points => join(' ', @pairs), fill => 'none',
+                       stroke => 'black', 'stroke-width' => $thickness);
     }
 }
 
@@ -675,9 +675,9 @@ sub blackLine($@) {
 sub blackBox($$$$) {
     my ($x1, $y1, $x2, $y2) = @_;
     $svg->rect(x => $x1 / SVG_SCALE, y => $y1 / SVG_SCALE,
-	       width => ($x2 - $x1) / SVG_SCALE,
-	       height => ($y2 - $y1) / SVG_SCALE,
-	       stroke => 'black', fill => 'black');
+               width => ($x2 - $x1) / SVG_SCALE,
+               height => ($y2 - $y1) / SVG_SCALE,
+               stroke => 'black', fill => 'black');
 }
 
 our %justToAnchor = (
@@ -687,12 +687,13 @@ our %justToAnchor = (
 );
 
 #  Write black text
-sub blackText($$$$) {
-    my ($just, $x, $y, $text) = @_;
+sub blackText($$$$;$) {
+    my ($just, $x, $y, $text, $bold) = @_;
     $svg->text(x => $x / SVG_SCALE, y => $y / SVG_SCALE,
-	       'text-align' => $just,
-	       'text-anchor' => $justToAnchor{$just})
-	->cdata($text);
+               'text-align' => $just,
+               'text-anchor' => $justToAnchor{$just},
+               'style' => $bold ? 'font-weight:bold' : 'font-weight:normal')
+        ->cdata($text);
 }
 
 # Draw the CD line
@@ -768,15 +769,17 @@ sub drawBar($$$) {
 }
 
 # Draw the names
-sub drawNames($$\@\@\@) {
-    my ($k, $nbars, $order, $rank, $names) = @_;
+sub drawNames($$\@\@\@$) {
+    my ($k, $nbars, $order, $rank, $names, $against) = @_;
 
     my $half = @{$order} >> 1;
     my $y    = 1300 + 150 * $nbars;
     for (my $i = 0; $i < $half; ++$i) {
         my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
         blackLine(1, $x, 1000, $x, $y, $x - 100, $y);
-        blackText('right', $x - 150, $y + 65, $names->[$order->[$i]]);
+        my $name = $names->[$order->[$i]];
+        my $bold = defined($against) && $name eq $against;
+        blackText('right', $x - 150, $y + 65, $name, $bold);
         $y += 200
     }
 
@@ -784,7 +787,9 @@ sub drawNames($$\@\@\@) {
     for (my $i = $half; $i < @{$order}; ++$i) {
         my $x = 500 + int(1000 * ($k - $rank->[$order->[$i]]));
         blackLine(1, $x, 1000, $x, $y, $x + 100, $y);
-        blackText('left', $x + 150, $y + 65, $names->[$order->[$i]]);
+        my $name = $names->[$order->[$i]];
+        my $bold = defined($against) && $name eq $against;
+        blackText('left', $x + 150, $y + 65, $name, $bold);
         $y -= 200
     }
 }
@@ -977,7 +982,7 @@ while ($i < @bars) {
 my $barDepth = assignDepth(@bars);
 
 # Draw names
-drawNames($k, $barDepth, @order, @ranks, @names);
+drawNames($k, $barDepth, @order, @ranks, @names, $against);
 
 # Draw the bars
 drawBars($k, @order, @ranks, @bars);
